@@ -15,14 +15,21 @@ Requires
 --------
 
 * R package:
+	
 	rphast, rtfbdbs, grid, cluster, apcluster, vioplot, DESeq2, gplots
+	
 	rtfbsdb (https://github.com/Danko-Lab/rtfbs_db) 
+	
 	bigWig  (https://github.com/andrelmartins/bigWig.git)
 
 * bioinformatics tools:
+	
 	awk, sort: Unix commands
+	
 	mergeBed, bedtools (http://bedtools.readthedocs.org/en/latest/)
+	
 	sort-bed (http://bedops.readthedocs.org/en/latest/index.html)
+	
 	twoBitToFa, faToTwoBit (http://hgdownload.cse.ucsc.edu/admin/exe/)
 
 * 2bit files for your genome of interest.  Find links to these here: http://hgdownload.cse.ucsc.edu/downloads.html

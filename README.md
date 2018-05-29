@@ -39,7 +39,7 @@ Requires
 Installation
 --------
 
-* If the package has been installed in R, please use the following codes to update the package. 
+* If all dependent packages and commands have been installed, please use the following codes to install/update the package. 
 
 ```````
 library("devtools");

@@ -14,15 +14,15 @@ Sources of Position Weight Matrices (PWMs).
 Requires
 --------
 
-* R package:
+* R packages:
 	
-	rphast, rtfbdbs, grid, cluster, apcluster, vioplot, DESeq2, gplots
+	rphast, rtfbdbs, grid, cluster, apcluster, vioplot, DESeq2, gplots.
 	
 	rtfbsdb (https://github.com/Danko-Lab/rtfbs_db) 
 	
 	bigWig  (https://github.com/andrelmartins/bigWig.git)
 
-* bioinformatics tools:
+* bioinformatics tools or exterior command:
 	
 	awk, sort: Unix commands
 	

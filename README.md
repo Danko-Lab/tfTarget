@@ -32,7 +32,9 @@ Requires
 	
 	twoBitToFa, faToTwoBit (http://hgdownload.cse.ucsc.edu/admin/exe/)
 
-* 2bit files for your genome of interest.  Find links to these here: http://hgdownload.cse.ucsc.edu/downloads.html
+* 2bit files for your genome of interest.  Find links to these here: 
+    
+	http://hgdownload.cse.ucsc.edu/downloads.html
 
 Installation
 --------

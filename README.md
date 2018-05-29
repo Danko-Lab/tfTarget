@@ -14,13 +14,16 @@ Sources of Position Weight Matrices (PWMs).
 Requires
 --------
 
-* rtfbdbs: In R, type: "install.packages('rtfbs')"
+* R package:
+	rphast, rtfbdbs, grid, cluster, apcluster, vioplot, DESeq2, gplots
+	rtfbsdb (https://github.com/Danko-Lab/rtfbs_db) 
+	bigWig  (https://github.com/andrelmartins/bigWig.git)
 
-* bedops:
-	* Get the latest version of the bedops binaries here: https://bedops.readthedocs.org/en/latest/
-	* Install, and add them to your path.
-
-* The twoBitToFa program from the Kent libraries.  Download it here: http://hgdownload.cse.ucsc.edu/admin/exe/
+* bioinformatics tools:
+	awk, sort: Unix commands
+	mergeBed, bedtools (http://bedtools.readthedocs.org/en/latest/)
+	sort-bed (http://bedops.readthedocs.org/en/latest/index.html)
+	twoBitToFa, faToTwoBit (http://hgdownload.cse.ucsc.edu/admin/exe/)
 
 * 2bit files for your genome of interest.  Find links to these here: http://hgdownload.cse.ucsc.edu/downloads.html
 

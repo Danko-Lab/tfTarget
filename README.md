@@ -1,7 +1,9 @@
 tfTarget
 ========
 
-Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs. Here we introduce rtfbsdb, a unified framework that integrates a database of more than 65,000 TF binding motifs with tools to easily and efficiently scan target genome sequences. Rtfbsdb clusters motifs with similar DNA sequence specificities and optionally integrates RNA-seq or PRO-seq data to restrict analyses to motifs recognized by TFs expressed in the cell type of interest.  Our package allows common analyses to be performed rapidly in an integrated environment.  
+Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs. Here we introduce tfTarget, a unified framework that identifies the "transcription factor -> regulatory elements -> target gene" regulatory network that are differential regulated between two conditions using PRO-seq/GRO-seq/ChRO-seq data as input.
+
+integrates a database of more than 65,000 TF binding motifs with tools to easily and efficiently scan target genome sequences. Rtfbsdb clusters motifs with similar DNA sequence specificities and optionally integrates RNA-seq or PRO-seq data to restrict analyses to motifs recognized by TFs expressed in the cell type of interest.  Our package allows common analyses to be performed rapidly in an integrated environment.  
 
 Uses: Parse TF motifs from public databases, read into R, and scan using 'rtfbs'.
 
@@ -16,7 +18,7 @@ Requires
 
 * R packages:
 	
-	rphast, rtfbdbs, grid, cluster, apcluster, vioplot, DESeq2, gplots.
+	rphast, rtfbdbs, grid, cluster, apcluster, DESeq2, gplots.
 	
 	rtfbsdb (https://github.com/Danko-Lab/rtfbs_db) 
 	

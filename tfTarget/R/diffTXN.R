@@ -13,8 +13,10 @@ getCounts.TRE <- function(plus, minus, intervals) {
 get.deseq.TRE.tab<-function(TRE.path, bigWig.path, plus.files.query, plus.files.control, minus.files.query, minus.files.control, ncores){
 
   #prepare regions of TRE
-  TREs <- read.table(TRE.path)
+  TREs <- read.table(TRE.path)[,1:3]
   TREs <- center.bed(TREs,250,250)
+  TREs[,2]<-sapply(TREs[,2],function(x)max(x,0))
+
 
   #prepare file names
   plus.files.query.full   <- paste(bigWig.path, plus.files.query, sep="/")

@@ -3,7 +3,7 @@ tfTarget
 
 Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" regulatory network differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as input.
 
-Work flow of tfTarget
+Workflow of tfTarget
 <img src="img/img1.png">
 
 Sources of Position Weight Matrices (PWMs).

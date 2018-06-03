@@ -1,12 +1,9 @@
 tfTarget
 ========
 
-Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs. Here we introduce tfTarget, a unified framework that identifies the "transcription factor -> regulatory elements -> target gene" regulatory network that are differential regulated between two conditions using PRO-seq/GRO-seq/ChRO-seq data as input.
+Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" regulatory network differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as input.
 
-integrates a database of more than 65,000 TF binding motifs with tools to easily and efficiently scan target genome sequences. Rtfbsdb clusters motifs with similar DNA sequence specificities and optionally integrates RNA-seq or PRO-seq data to restrict analyses to motifs recognized by TFs expressed in the cell type of interest.  Our package allows common analyses to be performed rapidly in an integrated environment.  
-
-Uses: Parse TF motifs from public databases, read into R, and scan using 'rtfbs'.
-
+Work flow of tfTarget
 <img src="img/img1.png">
 
 Sources of Position Weight Matrices (PWMs).
@@ -38,6 +35,12 @@ Requires
     
 	http://hgdownload.cse.ucsc.edu/downloads.html
 
+* TREs regions identified by dREG, or equivalent tools, in bed format. 
+	https://github.com/Danko-Lab/dREG
+
+* Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. We recommend to use gene ID and gene name for the 4th and 5th columns. The information will show up in the output.
+	https://www.gencodegenes.org/releases/current.html
+
 Installation
 --------
 
@@ -52,8 +55,8 @@ Documents
 ----------
 
 * R vignette:
-https://github.com/Danko-Lab/rtfbs_db/blob/master/rtfbsdb-vignette.pdf (Coming soon)
+ (Coming soon)
 
 * R manual:
-https://github.com/Danko-Lab/rtfbs_db/blob/master/rtfbsdb-manual.pdf 	 (Coming soon)
+ (Coming soon)
 

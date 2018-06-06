@@ -51,6 +51,13 @@ library("devtools");
 install_github("Danko-Lab/tfTarget/tfTarget")
 ```````
 
+Usage
+----------
+
+Output
+----------
+
+
 Documents
 ----------
 

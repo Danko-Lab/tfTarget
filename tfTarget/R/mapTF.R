@@ -102,7 +102,7 @@ mapTF<-function(tfTar, out.prefix=NULL, distance.cutoff=1E6, closest.N =NULL){
 
   if(!is.null(out.prefix))
   {
-    TF.TRE.gene.tab.filename <- paste(out.prefix,".TF.TRE.gene.bed", sep="")
+    TF.TRE.gene.tab.filename <- paste(out.prefix,".TF.TRE.gene.txt", sep="")
     write.table( TF.TRE.gene.tab.short, file = TF.TRE.gene.tab.filename, col.names = T, row.names = F, quote = F,sep="\t" )
   }
 

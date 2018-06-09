@@ -53,6 +53,9 @@ get.deseq.TRE.tab<-function(TRE.path, bigWig.path, plus.files.query, plus.files.
   res <- results(dds)
 
   EL <- cbind.data.frame(TREs, res)
+  
+  colnames(EL) <- c("tre.chrom", "tre.chromStart", "tre.chromEnd",
+           "TRE.baseMean", "TRE.log2FoldChange", "TRE.lfcSE", "TRE.stat", "TRE.pvalue", "TRE.padj")
 
   return(as.data.frame(EL))
 }
@@ -97,6 +100,7 @@ get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.fil
 
   stopifnot( length(plus.files) == length(minus.files) )
 
+
   #get reads count and do deseq
   raw_counts <- do.call(cbind,mclapply(1:length(plus.files),
       function(i) getCounts.gene(plus.files[i], minus.files[i],intervals= bodies),
@@ -124,6 +128,10 @@ get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.fil
   gene.deseq.bed <-tempfile()
   write.table(gene.tab,file= gene.deseq.bed, col.name=F, row.name=F, sep="\t", quote=F)
   gene.tab<-read.table(pipe(paste( "LC_COLLATE=C sort -k1,1 -k2,2n", gene.deseq.bed)))
+  colnames(gene.tab) <- c("gene.chrom", "gene.chromStart", "gene.chromEnd",
+  						"transcript.id","gene.name","gene.strand",
+           				"gene.baseMean","gene.log2FoldChange", "gene.lfcSE", "gene.stat",
+           				"gene.pvalue", "gene.padj")
   unlink(gene.deseq.bed)
 
   return(gene.tab)
@@ -138,7 +146,7 @@ diffTXN <- function( TRE.path, gene.path, bigWig.path, plus.files.query, plus.fi
 
   if(!is.null(out.prefix))
   {
-    TRE.tab.filename <- paste( out.prefix,".TRE.deseq.bed", sep="" )
+    TRE.tab.filename <- paste( out.prefix,".TRE.deseq.txt", sep="" )
     write.table( deseq.table.TRE, file= TRE.tab.filename, col.names=F, row.names=F, quote=F, sep="\t")
   }
 
@@ -148,7 +156,7 @@ diffTXN <- function( TRE.path, gene.path, bigWig.path, plus.files.query, plus.fi
     deseq.table.gene<-get.deseq.gene.tab(gene.path, bigWig.path, plus.files.query, plus.files.control, minus.files.query, minus.files.control, ncores)
     if(!is.null( out.prefix ))
     {
-      gene.tab.filename <- paste( out.prefix, ".gene.deseq.bed", sep="")
+      gene.tab.filename <- paste( out.prefix, ".gene.deseq.txt", sep="")
       write.table(deseq.table.gene, file=gene.tab.filename,col.names=F,row.names=F,quote=F,sep="\t")
     }
   }

@@ -2,9 +2,7 @@
 library(tfTarget)
 
 #system variables
-apcluster.path=system.file("extdata", "tfs.rdata", package="tfTarget")
 
-load(apcluster.path)
 
 Half.size = 150
 Min.size = 2500
@@ -24,6 +22,7 @@ Closest.N = NULL
 Distance.cutoff = 1E6
 deseq.only = F
 rtfbsdb.only = F
+Tfs.path =system.file("extdata", "tfs.rdata", package="tfTarget")
 
 args<-commandArgs(TRUE)
 
@@ -57,6 +56,13 @@ if ("-closest.N" %in% args ) Closest.N = as.numeric(args[which(args=="-closest.N
 if ("-dist" %in% args ) Distance.cutoff = as.numeric(args[which(args=="-dist")+1])
 if ("-deseq" %in% args ) deseq.only = T
 if ("-rtfbsdb" %in% args ) rtfbsdb.only = T
+if ("-tfs.path" %in% args ) Tfs.path = as.numeric(args[which(args=="-tfs.path")+1])
+
+
+
+load(Tfs.path)
+
+
 
 print("input file info")
 cat("-bigWig.path:", BigWig.path, "\n")
@@ -70,6 +76,7 @@ cat("-gene.path=", Gene.path, "\n")
 
 cat("\n")
 print("motif enrichment parameters");
+cat("-tfs.path=", Tfs.path, "\n");
 cat("-mTH=", MTH, "\n");
 cat("-cycles=", Run.repeats, "\n");
 cat("-fdr.cutoff=", Fdr.cutoff, "\n");

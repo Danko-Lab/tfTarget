@@ -1,0 +1,6 @@
+new_dreg=/workdir/tc532/xeno_manuscript_code/database/hg19.new.dreg/xeno.hg19.all.new.dreg.bed
+
+R --vanilla --slave --args -TRE.path $new_dreg -gene.path /workdir/tc532/salmon.ref/gencode.v22lift37.annotation.gene.sorted.with.type.bed -bigWig.path /workdir/tc532/xeno_manuscript_code/database/cutoff_10/hg19 -2bit.path /local/storage/data/hg19/hg19.2bit -prefix late.vs.early.new.dreg -ncores 50 -query UMU88-04_P57_plus.hg19.bw UMU88-04_P57_minus.hg19.bw UMU88-02_P56_plus.hg19.bw UMU88-02_P56_minus.hg19.bw UMU89-08_P52_plus.hg19.bw UMU89-08_P52_minus.hg19.bw -control UMU88-04_P2_plus.hg19.bw UMU88-04_P2_minus.hg19.bw UMU88-02_P3_plus.hg19.bw UMU88-02_P3_minus.hg19.bw UMU89-08_P3_plus.hg19.bw UMU89-08_P3_minus.hg19.bw  -cycles 1 -dist 100000 < main.R
+
+
+-closest.N 10

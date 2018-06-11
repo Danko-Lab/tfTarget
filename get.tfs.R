@@ -6,22 +6,29 @@ args<-commandArgs(TRUE)
 db <- CisBP.extdata(args);
 tfs <- tfbs.createFromCisBP(db);
 
-nonredundant.idx <-!duplicated(tfs@tf_info[,c("Motif_ID","TF_Name")])
 
-tfs@ntfs<-as.integer(table(nonredundant.idx)["TRUE"])
-tfs@mgisymbols<-tfs@mgisymbols[nonredundant.idx]
-tfs@filename<-tfs@filename[nonredundant.idx]
-tfs@pwm<-tfs@pwm[nonredundant.idx]
-tfs@tf_info<-tfs@tf_info[nonredundant.idx,]
+#merge redundant motif IDs
+
+tf_info.ori<-tfs@tf_info
+motif.ids.uniq<-unique(as.character(tfs@tf_info[,c("Motif_ID")]))
+
+merge.id<-function(motif.id){
+	ret.df<-tfs@tf_info[tfs@tf_info$Motif_ID== motif.id,,drop=F]
+	unlist(apply(ret.df,2,function(input.col) paste(unique(input.col),collapse="/")) )
+}
+
+tf_info.uniq<-unique(do.call(rbind.data.frame,lapply(motif.ids.uniq, merge.id)))
+colnames(tf_info.uniq)<-colnames(tfs@tf_info)
+
+tfs@tf_info<-tf_info.uniq
+
+tfs@ntfs<-nrow(tf_info.uniq)
+tfs@mgisymbols<-as.character(tf_info.uniq$Motif_ID)
+tfs@filename<-tfs@filename[match(tf_info.uniq$Motif_ID,tf_info.ori$Motif_ID)]
+tfs@pwm<-tfs@pwm[match(tf_info.uniq$Motif_ID,tf_info.ori$Motif_ID)]
 
 
-tfs@cluster<-cbind(tfs@cluster,1)
-attr(tfs@cluster,"dimnames")[[2]]<-c("subset", "clusters" ,"selected")
-
-save(file=paste(args,".tfs.rdata",sep=""))
-
-
-
+save(tfs, file=paste(args,".tfs.rdata",sep=""))
 
 
 

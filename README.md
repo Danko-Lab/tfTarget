@@ -1,7 +1,7 @@
 tfTarget
 ========
 
-Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" regulatory network differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as input. The package provies a convenient interface for users without knowledge in working with R environment, users can directly run the scipts in linux console. 
+Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" networks that are differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as the input. The package provies a convenient interface for users without assuming knowledge with R environment, users can directly run the scipts in linux console. 
 
 Workflow of tfTarget
 <img src="img/img1.png">

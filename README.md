@@ -90,9 +90,10 @@ Required arguments:
 Optional arguments:
 
 	Optional system arguments:
-	
-	-bigWig.path: path to the bigWig files. default="./"
-	-ncores: number of threads to use. default=1.
+	-bigWig.path: path to the bigWig files. 
+		default="./"
+	-ncores: number of threads to use. 
+		default=1.
 	-deseq: Use this tag indicates to run DEseq2 only. 
 		No arugment is required. default is off.
 	-rtfbsdb: Use this tag indicates to run DEseq2 and then rtfbsdb only. 
@@ -124,7 +125,21 @@ Optional arguments:
 
 Output
 ----------
-
+	The output of an complete run of the main.R function will output .pdf files and .txt files.
+	
+	Specifically,
+	1) .cor.heatmap.pdfs for TF motifs clustered by genomic locations,
+	2) .motif.ordered.pdfs for the visualization of TF motifs and their enrichment statistics
+		ordered by clusters in 1).
+	3) .TRE.deseq.txt for each TREs and their DESeq2 statistics.
+	4) .gene.deseq.txt for each annotated gene body and their DESeq2 statistics.
+		Rows with all NA value means that the length of gene is too short (<=1Kb) to be included for DESeq2 runs.
+	5) .TF.TRE.gene.txt for each TF whose motif is enriched in up/down TREs, 
+		and the TREs that contains the motif,
+		and the putative target genes for the TRE.
+		We recommend users to further filter the target genes of log2foldchange (and the pvalues) 
+		with the same diretion of change as the TRE by which it is regulated.
+	
 
 Documents
 ----------

@@ -3,9 +3,12 @@ library("rtfbsdb")
 
 args<-commandArgs(TRUE)
 
-db <- CisBP.extdata(args);
-tfs <- tfbs.createFromCisBP(db);
-
+if(args %in% c("Homo_sapiens", "Mus_musculus")) {
+	db <- CisBP.extdata(args)} else {
+		db<-CisBP.download(args)
+	}
+	
+tfs <- tfbs.createFromCisBP(db)
 
 #merge redundant motif IDs
 

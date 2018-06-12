@@ -1,13 +1,10 @@
 tfTarget
 ========
 
-Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" regulatory network differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as input.
+Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" regulatory network differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as input. The package provies a convenient interface for users without knowledge in working with R environment, users can directly run the scipts in linux console. 
 
 Workflow of tfTarget
 <img src="img/img1.png">
-
-Sources of Position Weight Matrices (PWMs).
--------------------------------------------
 
 
 Requires
@@ -34,12 +31,22 @@ Requires
 * 2bit files for your genome of interest.  Find links to these here: 
     
 	http://hgdownload.cse.ucsc.edu/downloads.html
+	
+* tfs object file for the species of interests, in .rdata format, which contains the curated transcription factor motifs database. For Homo_sapiens, it is provided by tfTarget package, and will be used by default. For others species, we provide a convenient script get.tfs.R to call rtfbsdb, and generate the species.tfs.rdata. 
+	
+	example: R --vanilla --slave --args "YOUR SPECIES NAME" < get.tfs.R
+	
+	The look-up table for "YOUR SPECIES NAME" can be found here: 
+	The "species" column (1st column) of  http://cisbp.ccbr.utoronto.ca/summary.php?by=1&orderby=Species
 
 * TREs regions identified by dREG, or equivalent tools, in bed format. 
 	https://github.com/Danko-Lab/dREG
 
 * Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. We recommend to use gene ID and gene name for the 4th and 5th columns. The information will show up in the output.
 	https://www.gencodegenes.org/releases/current.html
+	
+* bigWigs files of query and control replicates. The same requirement for preparing the input files for dREG. 
+	See this https://github.com/Danko-Lab/dREG#data-preparation
 
 Installation
 --------
@@ -53,6 +60,51 @@ install_github("Danko-Lab/tfTarget/tfTarget")
 
 Usage
 ----------
+
+To use the tfTarget package, after installing tfTarget package, simply run "R --vanilla --slave --args ... < main.R" under the directory of main.R, with ... specifying arguments for tfTarget detailed as below.
+
+Required arguments: 
+
+	-query: query file names of PRO-seq in bigWig format, ordered by plus and minus pairings, e.g. query1.plus.bw, query1.minus.bw, query2.plus.bw, query2.minus.bw, etc. 
+	(The default directory is the current working directory, use -bigWig.path to speficy if otherwise.)
+
+	-control: control file names of PRO-seq in bigWig format, ordered by plus and minus pairings, e.g. control1.plus.bw, control1.minus.bw, control2.plus.bw, control2.minus.bw, etc. 
+	(The default directory is the current working directory, use -bigWig.path to speficy if otherwise.)
+
+	-prefix: prefix for the output pdfs and txts. 
+	
+	-TRE.path: input TRE regions, e.g. dREG sites, in bed3 format. Only the first three columns will be used. To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html).
+	
+	-gene.path: Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. We recommend to use gene ID and gene name for the 4th and 5th columns. The information will show up in the output. https://www.gencodegenes.org/releases/current.html
+	
+	-2bit.path: 2bit files for your genome of interest.  Find links to these here: http://hgdownload.cse.ucsc.edu/downloads.html
+
+
+Optional arguments:
+
+	Optional system arguments:
+	
+	-bigWig.path: path to the bigWig files. default="./"
+	-ncores: number of threads to use. default=1.
+	-deseq: The presence of this tag indicates to run DEseq2 only. No arugment is required. default is off.
+	-rtfbsdb: The presence of this tag indicates to run DEseq2 and then rtfbsdb only. No arugment is required. default is off.
+	
+	Optional DEseq2 arguments:
+	-pval.up: adjusted pvalue cutoff below which indicates differentially transcribed TREs. default=0.01.
+	-pval.down: adjusted pvalue cutoff above which indicates TREs that are not significantly changed between query and control. default=0.1
+	
+	Optional rtfbsdb arguments:
+	-tfs.path: use this tag to specify tfs object from non-Homo sapiens species. Can be prepared using get.tfs.R. See the "requires" section above.
+	-cycles: how many cycles to run GC-subsampled motif enrichment test. default=2.
+	-mTH: threshold over which the TF motif is defined as significant different from the HMM background. default=7.
+	-fdr.cutoff: cutoff of the median of pvalues from multiple GC-subsampled runs, above which defines significantly enriched motifs.
+	
+	Optional mapTF arguments:
+	-dist: the distance cutoff for asscoiating TRE to the nearest annotated transcriptional start site. default=1E6.
+	-closest.N: use this tag to report only the first nth genes to the TRE, can be used in combination with -dist. default is off.
+	
+
+
 
 Output
 ----------

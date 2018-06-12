@@ -130,7 +130,7 @@ Output
 	Specifically,
 	1) .cor.heatmap.pdfs for TF motifs clustered by genomic locations,
 	2) .motif.ordered.pdfs for the visualization of TF motifs and their enrichment statistics
-		ordered by clusters in 1).
+	   ordered by clusters in 1).
 	3) .TRE.deseq.txt for each TREs and their DESeq2 statistics.
 	4) .gene.deseq.txt for each annotated gene body and their DESeq2 statistics.
 	   Rows with all NA value means that the length of gene is too short (<=1Kb) to be included for DESeq2 runs.

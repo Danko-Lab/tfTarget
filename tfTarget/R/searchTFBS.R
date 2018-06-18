@@ -361,10 +361,10 @@ searchTFBS <- function(tfTar, tfs, file.twoBit, pval.cutoff.up=0.01, pval.cutoff
   deseq.table.TRE <-tfTar$deseq.table.TRE;
   #ncores <- tfTar$ncores;
 
-  deseq.table.sig <- center.bed(deseq.table.TRE[!is.na(deseq.table.TRE$padj) & deseq.table.TRE$padj<pval.cutoff.up,], half.size, half.size)
-  enh.unc.bed     <- center.bed(deseq.table.TRE[!is.na(deseq.table.TRE$padj) & deseq.table.TRE$padj> pval.cutoff.down,], half.size, half.size)
-  enh.up.bed      <- deseq.table.sig[deseq.table.sig$log2FoldChange>0,]
-  enh.down.bed    <- deseq.table.sig[deseq.table.sig$log2FoldChange<0,]
+  deseq.table.sig <- center.bed(deseq.table.TRE[!is.na(deseq.table.TRE$TRE.padj) & deseq.table.TRE$TRE.padj <pval.cutoff.up,], half.size, half.size)
+  enh.unc.bed     <- center.bed(deseq.table.TRE[!is.na(deseq.table.TRE$TRE.padj) & deseq.table.TRE$TRE.padj> pval.cutoff.down,], half.size, half.size)
+  enh.up.bed      <- deseq.table.sig[deseq.table.sig$TRE.log2FoldChange>0,]
+  enh.down.bed    <- deseq.table.sig[deseq.table.sig$TRE.log2FoldChange<0,]
 
   motif.list.up <- tfbs.enrichmentTest.multiple(tfs, file.twoBit,  enh.up.bed, enh.unc.bed, mTH, min.size, run.repeats, ncores);
   motif.list.down <- tfbs.enrichmentTest.multiple(tfs, file.twoBit, enh.down.bed, enh.unc.bed, mTH, min.size, run.repeats, ncores);

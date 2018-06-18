@@ -147,7 +147,7 @@ diffTXN <- function( TRE.path, gene.path, bigWig.path, plus.files.query, plus.fi
   if(!is.null(out.prefix))
   {
     TRE.tab.filename <- paste( out.prefix,".TRE.deseq.txt", sep="" )
-    write.table( deseq.table.TRE, file= TRE.tab.filename, col.names=F, row.names=F, quote=F, sep="\t")
+    write.table( deseq.table.TRE, file= TRE.tab.filename, col.names=T, row.names=F, quote=F, sep="\t")
   }
 
   deseq.table.gene<-NULL
@@ -157,7 +157,7 @@ diffTXN <- function( TRE.path, gene.path, bigWig.path, plus.files.query, plus.fi
     if(!is.null( out.prefix ))
     {
       gene.tab.filename <- paste( out.prefix, ".gene.deseq.txt", sep="")
-      write.table(deseq.table.gene, file=gene.tab.filename,col.names=F,row.names=F,quote=F,sep="\t")
+      write.table(deseq.table.gene, file=gene.tab.filename,col.names=T,row.names=F,quote=F,sep="\t")
     }
   }
 

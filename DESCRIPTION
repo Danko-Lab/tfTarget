@@ -1,0 +1,14 @@
+Package: tfTarget
+Version: 1.0
+Date: 2018-05-04
+Title: An Integrated Framework for prioritizing targets of transcription factors from PRO-seq/ChRO-seq data
+Author: Tinyi Chu<tc532@cornell.edu>, Charles G. Danko <dankoc@gmail.com>
+Maintainer: Tinyi Chu<tc532@cornell.edu>
+Depends: R (>= 2.6)
+Imports: rphast, rtfbs, parallel, grid, cluster, methods, latticeExtra,
+        lattice, apcluster, vioplot, tools, rtfbsdb, bigWig, DESeq2, gplots
+Description: This packages provides a way of associating the transcription factors with their target genes from PRO-seq/ChRO-seq data. It works by 1) identifing differentially transcribed transcription regulatory elements (TRE) and annotated genes, and 2) the transcription factor motifs enriched over these TREs, followed by associating TF with the TREs and target genes. 3). This package also provides a convenient wrapper function that allows users to run DESeq2 / an upgraded version of rtfbsdb separately on PRO-seq/ChRO-seq data. 
+License: GPL-3
+biocViews: Sequencing, Analysis
+LazyLoad: yes
+RoxygenNote: 6.0.1

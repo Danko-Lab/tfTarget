@@ -306,9 +306,6 @@ tfbs_enrichmentTest<-function( tfbs, file.genome,
   return(r);
 }
 
-assignInNamespace("background.check", background.check,ns="rtfbsdb")
-assignInNamespace("tfbs_enrichmentTest", tfbs_enrichmentTest,ns="rtfbsdb")
-
 # enh.up.bed: upregulated bed file, in dataframe
 # enh.unc.bed: control bed file, in dataframe
 # half.size: bp from the center, default= 150

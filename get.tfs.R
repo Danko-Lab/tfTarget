@@ -10,6 +10,7 @@ if(args %in% c("Homo_sapiens", "Mus_musculus")) {
 	
 tfs <- tfbs.createFromCisBP(db)
 
+
 #merge redundant motif IDs
 
 tf_info.ori<-tfs@tf_info

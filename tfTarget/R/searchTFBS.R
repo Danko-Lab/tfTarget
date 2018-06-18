@@ -1,6 +1,5 @@
 background.check<-function( gc.pos, gc.neg, gc.correction, file.pdf.vioplot=NA, gc.min.sample = 500, verbose=TRUE )
 {
-  print("new function detected")
   pdf.output <- FALSE;
   gc.test <- wilcox.test(gc.pos, gc.neg, conf.int=TRUE, conf.level=0.9 );
 

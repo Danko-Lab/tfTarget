@@ -1,5 +1,10 @@
 get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff, closest.N){
 
+  #remove the lfcSE and stat column to avoid being interprated as bed12 format by bedtools
+  
+  enh.bed<-enh.bed[,-c(6,7)]
+  gene.deseq.bed.sorted<-gene.deseq.bed.sorted[,-c(9,10)]
+  
   options(scipen =99)
   enh.bed.file<-tempfile()
   write.table(enh.bed,file = enh.bed.file, col.name=F, row.name=F, sep="\t", quote=F)
@@ -10,7 +15,7 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
   if(!is.null(closest.N)){
   	#find closest nth gene within the distance cutoff
 
-    get.closet.nth.command<-paste("cat" ,  gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10,$11,$12}' | sort-bed - | bedtools closest -t \"first\" -d -k", closest.N  ,"-a", enh.bed.file, "-b stdin")
+    get.closet.nth.command<-paste("cat" ,  gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10}' | sort-bed - | bedtools closest -t \"first\" -d -k", closest.N  ,"-a", enh.bed.file, "-b stdin")
 
     closest.tab <- read.table(pipe(get.closet.nth.command))
     unlink(enh.bed.file)
@@ -38,7 +43,7 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
     
     write.table(enh.ext.bed, file = enh.ext.bed.file, col.name=F, row.name=F, sep="\t", quote=F)
 
-    get.proximal.command<-paste("cat", gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10,$11,$12}' | sort-bed - | bedtools closest -t \"all\" -d -a", enh.ext.bed.file, "-b stdin | awk 'BEGIN{OFS=\"\t\"} $NF==0 {$NF=\"\"; print $0}' | bedtools overlap -i stdin -cols 5,6,14,15")
+    get.proximal.command<-paste("cat", gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10}' | sort-bed - | bedtools closest -t \"all\" -d -a", enh.ext.bed.file, "-b stdin | awk 'BEGIN{OFS=\"\t\"} $NF==0 {$NF=\"\"; print $0}' | bedtools overlap -i stdin -cols 5,6,12,13")
 
     closest.tab <- read.table(pipe(get.proximal.command))
     closest.tab<-closest.tab[,-c(1:3)]
@@ -89,10 +94,10 @@ mapTF<-function(tfTar, out.prefix=NULL, distance.cutoff=1E6, closest.N =NULL){
   header.vec<-c("tre.chrom", "tre.chromStart", "tre.chromEnd",
            "tf.chrom", "tf.chromStart", "tf.chromEnd", "score", "strand",
            "motif.name", "motif.id", "motif.idx",
-           "TRE.baseMean", "TRE.log2FoldChange", "TRE.lfcSE", "TRE.stat", "TRE.pvalue", "TRE.padj",
+           "TRE.baseMean", "TRE.log2FoldChange", "TRE.pvalue", "TRE.padj",
            "gene.TSS.chr", "gene.TSS.start", "gene.TSS.end", "transcript.id",
            "gene.name", "gene.strand", "gene.baseMean",
-           "gene.log2FoldChange", "gene.lfcSE", "gene.stat",
+           "gene.log2FoldChange",
            "gene.pvalue", "gene.padj", "distance")
   if(!is.null(closest.N)) header.vec<-c(header.vec, "closest.N")         
            

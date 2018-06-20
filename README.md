@@ -81,6 +81,7 @@ Required arguments:
 		e.g., cat query.dREG.score.bed query.dREG.peak.score.bed control.dREG.peak.score.bed \
 			| LC_COLLATE=C sort -k1,1 -k2,2n \
 			| bedtools merge -i stdin > merged.dREG.bed
+		*Use zcat for bed.gz files.
 	
 	-gene.path: Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. 
 		We recommend to use gene ID and gene name for the 4th and 5th columns. 

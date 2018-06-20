@@ -22,7 +22,7 @@ Requires
 	
 	awk, sort: Unix commands
 	
-	mergeBed, bedtools (http://bedtools.readthedocs.org/en/latest/)
+	bedtools (http://bedtools.readthedocs.org/en/latest/)
 	
 	sort-bed (http://bedops.readthedocs.org/en/latest/index.html)
 	

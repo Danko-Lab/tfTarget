@@ -42,7 +42,8 @@ Requires
 * TREs regions identified by dREG, or equivalent tools, in bed format. 
 
 	To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
-	using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html),e.g.,
+	using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html), e.g.,
+	
 	cat query.dREG.peak.score.bed control.dREG.peak.score.bed \
 	| LC_COLLATE=C sort -k1,1 -k2,2n \
 	| bedtools merge -i stdin > merged.dREG.bed
@@ -53,6 +54,7 @@ Requires
 	https://www.gencodegenes.org/releases/current.html
 	
 	gtf.gz files can be converted to the gene annotation file for tfTarget input using the following command as an example:
+	
 	zcat gencode.v19.annotation.gtf.gz \
 	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$16,$7}}' \
 	| tr -d '";' > gencode.v19.annotation.bed

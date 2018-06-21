@@ -40,10 +40,24 @@ Requires
 	The "species" column (1st column) of  http://cisbp.ccbr.utoronto.ca/summary.php?by=1&orderby=Species
 
 * TREs regions identified by dREG, or equivalent tools, in bed format. 
-	https://github.com/Danko-Lab/dREG
+
+	To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
+	using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html), e.g.,
+	
+	cat query.dREG.peak.score.bed control.dREG.peak.score.bed \
+	| LC_COLLATE=C sort -k1,1 -k2,2n \
+	| bedtools merge -i stdin > merged.dREG.bed
+	
+	*Use zcat for bed.gz files.
 
 * Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. We recommend to use gene ID and gene name for the 4th and 5th columns. The information will show up in the output.
 	https://www.gencodegenes.org/releases/current.html
+	
+	gtf.gz files can be converted to the gene annotation file for tfTarget input using the following command as an example:
+	
+	zcat gencode.v19.annotation.gtf.gz \
+	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$16,$7}}' \
+	| tr -d '";' > gencode.v19.annotation.bed
 	
 * bigWigs files of query and control replicates. The same requirement for preparing the input files for dREG. 
 	See this https://github.com/Danko-Lab/dREG#data-preparation
@@ -76,12 +90,6 @@ Required arguments:
 	-prefix: prefix for the output pdfs and txts. 
 	
 	-TRE.path: input TRE regions, e.g. dREG sites, in bed3 format. Only the first three columns will be used. 
-		To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
-		using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html),
-		e.g., cat query.dREG.score.bed query.dREG.peak.score.bed control.dREG.peak.score.bed \
-			| LC_COLLATE=C sort -k1,1 -k2,2n \
-			| bedtools merge -i stdin > merged.dREG.bed
-		*Use zcat for bed.gz files.
 	
 	-gene.path: Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. 
 		We recommend to use gene ID and gene name for the 4th and 5th columns. 

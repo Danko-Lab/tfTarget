@@ -78,7 +78,7 @@ Required arguments:
 	-TRE.path: input TRE regions, e.g. dREG sites, in bed3 format. Only the first three columns will be used. 
 		To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
 		using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html),
-		e.g., cat query.dREG.score.bed query.dREG.peak.score.bed control.dREG.peak.score.bed \
+		e.g., cat query.dREG.peak.score.bed control.dREG.peak.score.bed \
 			| LC_COLLATE=C sort -k1,1 -k2,2n \
 			| bedtools merge -i stdin > merged.dREG.bed
 		*Use zcat for bed.gz files.

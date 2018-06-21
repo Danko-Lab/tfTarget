@@ -7,11 +7,13 @@ Cite tfTarget:
 --------
 Chromatin run-on reveals the transcriptional etiology of glioblastoma multiforme
 Tinyi Chu, Edward J Rice, Gregory T Booth, Hans H Salamanca, Zhong Wang, Leighton J Core, Sharon L Longo, Robert J Corona, Lawrence S Chin, John T Lis, Hojoong Kwak, Charles Danko (Nature Genetics, accpeted)
+
 bioRxiv 185991; doi: https://doi.org/10.1101/185991
 
 
 
 Workflow of tfTarget
+--------
 <img src="img/img1.png">
 
 

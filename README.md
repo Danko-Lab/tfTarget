@@ -22,7 +22,7 @@ Requires
 	
 	awk, sort: Unix commands
 	
-	mergeBed, bedtools (http://bedtools.readthedocs.org/en/latest/)
+	bedtools (http://bedtools.readthedocs.org/en/latest/)
 	
 	sort-bed (http://bedops.readthedocs.org/en/latest/index.html)
 	
@@ -34,9 +34,9 @@ Requires
 	
 * tfs object file for the species of interests, in .rdata format, which contains the curated transcription factor motifs database. For Homo_sapiens, it is provided by tfTarget package, and will be used by default. For others species, we provide a convenient script get.tfs.R to call rtfbsdb, and generate the species.tfs.rdata. 
 	
-	example: R --vanilla --slave --args "YOUR SPECIES NAME" < get.tfs.R
+	example: R --vanilla --slave --args Drosophila_melanogaster < get.tfs.R
 	
-	The look-up table for "YOUR SPECIES NAME" can be found here: 
+	The look-up table for species name can be found here: 
 	The "species" column (1st column) of  http://cisbp.ccbr.utoronto.ca/summary.php?by=1&orderby=Species
 
 * TREs regions identified by dREG, or equivalent tools, in bed format. 
@@ -77,7 +77,11 @@ Required arguments:
 	
 	-TRE.path: input TRE regions, e.g. dREG sites, in bed3 format. Only the first three columns will be used. 
 		To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
-		using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html).
+		using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html),
+		e.g., cat query.dREG.score.bed query.dREG.peak.score.bed control.dREG.peak.score.bed \
+			| LC_COLLATE=C sort -k1,1 -k2,2n \
+			| bedtools merge -i stdin > merged.dREG.bed
+		*Use zcat for bed.gz files.
 	
 	-gene.path: Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. 
 		We recommend to use gene ID and gene name for the 4th and 5th columns. 

@@ -228,14 +228,14 @@ cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH
 
   my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 299)
 
-  hc.col <- hclust(dist(t(cor.mat)), method="ward.D2");
-  hc.row <- hclust(dist(cor.mat), method="ward.D2");
+  
+  hc <- hclust(as.dist(1-cor.mat), method="ward.D2");
   hist.order <- heatmap.2(as.matrix(cor.mat),
        col = my_palette,
        density.info = "none",
        trace ="none",
-       Rowv = as.dendrogram(hc.row),
-       Colv = as.dendrogram(hc.col),
+       Rowv = as.dendrogram(hc),
+       Colv = as.dendrogram(hc),
        dendrogram = c("both"),
        symm = T,
        symkey = F,

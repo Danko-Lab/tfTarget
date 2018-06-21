@@ -3,8 +3,8 @@ tfTarget
 
 Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" networks that are differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as the input. The package provies a convenient interface for users without assuming knowledge with R environment, users can directly run the scipts in linux console. 
 
-cite tfTarget:
-
+Cite tfTarget:
+--------
 Chromatin run-on reveals the transcriptional etiology of glioblastoma multiforme
 Tinyi Chu, Edward J Rice, Gregory T Booth, Hans H Salamanca, Zhong Wang, Leighton J Core, Sharon L Longo, Robert J Corona, Lawrence S Chin, John T Lis, Hojoong Kwak, Charles Danko (Nature Genetics, accpeted)
 bioRxiv 185991; doi: https://doi.org/10.1101/185991

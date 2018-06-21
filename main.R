@@ -56,7 +56,7 @@ if ("-closest.N" %in% args ) Closest.N = as.numeric(args[which(args=="-closest.N
 if ("-dist" %in% args ) Distance.cutoff = as.numeric(args[which(args=="-dist")+1])
 if ("-deseq" %in% args ) deseq.only = T
 if ("-rtfbsdb" %in% args ) rtfbsdb.only = T
-if ("-tfs.path" %in% args ) Tfs.path = as.numeric(args[which(args=="-tfs.path")+1])
+if ("-tfs.path" %in% args ) Tfs.path = args[which(args=="-tfs.path")+1]
 
 
 

@@ -3,7 +3,18 @@ tfTarget
 
 Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" networks that are differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as the input. The package provies a convenient interface for users without assuming knowledge with R environment, users can directly run the scipts in linux console. 
 
+Cite tfTarget:
+--------
+Chromatin run-on reveals the transcriptional etiology of glioblastoma multiforme
+
+Tinyi Chu, Edward J Rice, Gregory T Booth, Hans H Salamanca, Zhong Wang, Leighton J Core, Sharon L Longo, Robert J Corona, Lawrence S Chin, John T Lis, Hojoong Kwak, Charles Danko
+
+bioRxiv 185991; doi: https://doi.org/10.1101/185991
+
+
+
 Workflow of tfTarget
+--------
 <img src="img/img1.png">
 
 
@@ -80,11 +91,11 @@ To use the tfTarget package, after installing tfTarget package, simply run "R --
 Required arguments: 
 
 	-query: query file names of PRO-seq in bigWig format, ordered by plus and minus pairings, 
-		e.g. query1.plus.bw, query1.minus.bw, query2.plus.bw, query2.minus.bw, etc. 
+		e.g. query1.plus.bw query1.minus.bw query2.plus.bw query2.minus.bw ... 
 		(The default directory is the current working directory, use -bigWig.path to speficy if otherwise.)
 
 	-control: control file names of PRO-seq in bigWig format, ordered by plus and minus pairings, 
-		e.g. control1.plus.bw, control1.minus.bw, control2.plus.bw, control2.minus.bw, etc. 
+		e.g. control1.plus.bw control1.minus.bw control2.plus.bw control2.minus.bw ...
 		(The default directory is the current working directory, use -bigWig.path to speficy if otherwise.)
 
 	-prefix: prefix for the output pdfs and txts. 

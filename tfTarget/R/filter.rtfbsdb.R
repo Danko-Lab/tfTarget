@@ -53,13 +53,17 @@ merge.motif.df.by.name<-function(motif.df){
 }
 
 
-get.motif.df<-function(motif.list, fdr.cutoff, sites.num.cutoff, exp.cutoff, plus.files, minus.files, bigWig.path, tf.gene.path){
+get.motif.df<-function(motif.list, fdr.cutoff, sites.num.cutoff, exp.cutoff, plus.files.query, minus.files.query, plus.files.control, minus.files.control, bigWig.path, tf.gene.path){
 
   motifs.to.plot <-get_robust_motif.median.pval.sites(motif.list, fdr.cutoff, sites.num.cutoff)
   df.motif <-merge.motif.list(motif.list, motifs.to.plot)
 
-  tf.exp.mat<-get.raw.count(bigWig.path, plus.files, minus.files, tf.names= df.motif[,2], tf.gene.path)
-  if.exp<-apply(tf.exp.mat> exp.cutoff, 1, prod)
+  tf.exp.mat<-get.raw.count(bigWig.path= bigWig.path, plus.files=c(plus.files.query, plus.files.control), minus.files=c(minus.files.query, minus.files.control), tf.names= df.motif[,2], tf.gene.path)
+  
+  if.exp.query<-apply(tf.exp.mat[,c(1:length(plus.files.query))]> exp.cutoff, 1, prod)
+  if.exp.control<-apply(tf.exp.mat[,-c(1:length(plus.files.query))]> exp.cutoff, 1, prod)
+  
+  if.exp<- if.exp.query+if.exp.control
 
   df.motif.exp<-df.motif[!is.na(if.exp) & if.exp>0,]
 
@@ -81,8 +85,10 @@ filter.rtfbsdb<-function(tfTar, fdr.cutoff=0.05, sites.num.cutoff=10, exp.cutoff
                                    fdr.cutoff = fdr.cutoff,
                                    sites.num.cutoff = sites.num.cutoff,
                                    exp.cutoff = exp.cutoff,
-                                   plus.files = tfTar$plus.files.query,
-                                   minus.files = tfTar$minus.files.query,
+                                   plus.files.query = tfTar$plus.files.query,
+                                   minus.files.query = tfTar$minus.files.query,
+                                   plus.files.control = tfTar$plus.files.control,
+                                   minus.files.control = tfTar$minus.files.control,
                                    bigWig.path = tfTar$bigWig.path,
                                    tf.gene.path = tfTar$gene.path);
 
@@ -99,8 +105,10 @@ filter.rtfbsdb<-function(tfTar, fdr.cutoff=0.05, sites.num.cutoff=10, exp.cutoff
                                     fdr.cutoff = fdr.cutoff,
                                     sites.num.cutoff = sites.num.cutoff,
                                     exp.cutoff = exp.cutoff,
-                                    plus.files = tfTar$plus.files.control,
-                                    minus.files = tfTar$minus.files.control,
+                                    plus.files.query = tfTar$plus.files.query,
+                                    minus.files.query = tfTar$minus.files.query,
+                                    plus.files.control = tfTar$plus.files.control,
+                                    minus.files.control = tfTar$minus.files.control,                                    
                                     bigWig.path = tfTar$bigWig.path,
                                     tf.gene.path = tfTar$gene.path)
 

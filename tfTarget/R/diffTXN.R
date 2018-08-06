@@ -161,8 +161,7 @@ diffTXN <- function( TRE.path, gene.path, bigWig.path, plus.files.query, plus.fi
     }
   }
 
-  res.obj<-list(deseq.table.TRE =deseq.table.TRE,
-        deseq.table.TRE = deseq.table.TRE,
+  res.obj<-list(deseq.table.TRE = deseq.table.TRE,
         deseq.table.gene = deseq.table.gene,
         gene.path = gene.path,
         bigWig.path = bigWig.path,

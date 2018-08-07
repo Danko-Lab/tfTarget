@@ -224,7 +224,7 @@ cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH
 
   cor.mat <- cor(pos.mat,method="spearman");
 
-  pdf( paste(pdf.name, ".cor.heatmap.pdf",sep=""), pointsize=10, useDingbats=FALSE);
+  pdf( paste(pdf.name, ".cor.heatmap.pdf",sep=""), pointsize=8, useDingbats=FALSE, paper="letter");
 
   my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 299)
 
@@ -241,8 +241,10 @@ cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH
        symkey = F,
        symbreaks = T,
        scale = "none",
-       cexRow = 0.1,
-       cexCol = 0.1);
+       margins=c(10,10),
+       key.xlab="correlation coefficient",
+       cexRow = 0.2 + 1/log10(nrow(cor.mat)+1),
+       cexCol = 0.2 + 1/log10(ncol(cor.mat)+1));
 
   dev.off();
   motif.df.ordered<-motif.df[rev(hist.order$rowInd),];

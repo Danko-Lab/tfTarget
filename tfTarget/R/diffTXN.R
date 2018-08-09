@@ -85,6 +85,9 @@ get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.fil
   bodies$V3[bodies$V6 == "-"] <- bodies$V3[bodies$V6 == "-"]-500
   bodies <-unique(bodies)
 
+  #filter chromosome without bigwigs using TREs
+  bodies<-bodies[bodies[,1] %in% read.table(TRE.path)[,1],]
+
   #prepare file names
   plus.files.query.full   <- paste(bigWig.path, plus.files.query, sep="/")
   plus.files.control.full <- paste(bigWig.path, plus.files.control, sep="/")
@@ -99,7 +102,6 @@ get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.fil
   file.names <- gsub("_pl","", gsub("_plus","", file.names))
 
   stopifnot( length(plus.files) == length(minus.files) )
-
 
   #get reads count and do deseq
   raw_counts <- do.call(cbind,mclapply(1:length(plus.files),

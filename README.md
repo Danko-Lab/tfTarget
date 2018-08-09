@@ -70,7 +70,7 @@ Requires
 	gtf.gz files can be converted to the gene annotation file for tfTarget input using the following command as an example:
 ```````	
 	zcat gencode.v19.annotation.gtf.gz \
-	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$16,$7}}' \
+	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$18,$7}}' \
 	| tr -d '";' > gencode.v19.annotation.bed
 ```````
 

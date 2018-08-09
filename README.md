@@ -45,7 +45,10 @@ Requires
 	
 * tfs object file for the species of interests, in .rdata format, which contains the curated transcription factor motifs database. For Homo_sapiens, it is provided by tfTarget package, and will be used by default. For others species, we provide a convenient script get.tfs.R to call rtfbsdb, and generate the species.tfs.rdata. 
 	
-	example: R --vanilla --slave --args Drosophila_melanogaster < get.tfs.R
+	example: 
+	```````
+	R --vanilla --slave --args Drosophila_melanogaster < get.tfs.R
+	```````
 	
 	The look-up table for species name can be found here: 
 	The "species" column (1st column) of  http://cisbp.ccbr.utoronto.ca/summary.php?by=1&orderby=Species
@@ -54,22 +57,23 @@ Requires
 
 	To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
 	using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html), e.g.,
-	
+```````	
 	cat query.dREG.peak.score.bed control.dREG.peak.score.bed \
 	| LC_COLLATE=C sort -k1,1 -k2,2n \
 	| bedtools merge -i stdin > merged.dREG.bed
-	
+```````	
 	*Use zcat for bed.gz files.
 
 * Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. We recommend to use gene ID and gene name for the 4th and 5th columns. The information will show up in the output.
 	https://www.gencodegenes.org/releases/current.html
 	
 	gtf.gz files can be converted to the gene annotation file for tfTarget input using the following command as an example:
-	
+```````	
 	zcat gencode.v19.annotation.gtf.gz \
-	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$16,$7}}' \
+	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$18,$7}}' \
 	| tr -d '";' > gencode.v19.annotation.bed
-	
+```````
+
 * bigWigs files of query and control replicates. The same requirement for preparing the input files for dREG. 
 	See this https://github.com/Danko-Lab/dREG#data-preparation
 

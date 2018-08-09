@@ -80,13 +80,13 @@ get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.fil
   refGene.excluded <- refGene[(refGene$V3-refGene$V2)<=1000,]
   refGene <- refGene[(refGene$V3-refGene$V2)>1000,]
 
+ #filter chromosome without bigwigs using TREs
+  refGene <-refGene[refGene[,1] %in% unique(read.table(TRE.path)[,1]),]
+  
   bodies <- refGene
   bodies$V2[bodies$V6 == "+"] <- bodies$V2[bodies$V6 == "+"]+500
   bodies$V3[bodies$V6 == "-"] <- bodies$V3[bodies$V6 == "-"]-500
   bodies <-unique(bodies)
-
-  #filter chromosome without bigwigs using TREs
-  bodies<-bodies[bodies[,1] %in% unique(read.table(TRE.path)[,1]),]
 
   #prepare file names
   plus.files.query.full   <- paste(bigWig.path, plus.files.query, sep="/")

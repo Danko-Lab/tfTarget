@@ -86,7 +86,7 @@ get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.fil
   bodies <-unique(bodies)
 
   #filter chromosome without bigwigs using TREs
-  bodies<-bodies[bodies[,1] %in% read.table(TRE.path)[,1],]
+  bodies<-bodies[bodies[,1] %in% unique(read.table(TRE.path)[,1]),]
 
   #prepare file names
   plus.files.query.full   <- paste(bigWig.path, plus.files.query, sep="/")

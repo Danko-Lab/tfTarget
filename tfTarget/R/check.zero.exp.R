@@ -36,7 +36,7 @@ get.raw.count <- function(bigWig.path, plus.files, minus.files, tf.names, tf.gen
 
   refGene <- read.table(tf.gene.path);
   refGene <- refGene[grep("random|Un|hap", refGene$V1, invert=TRUE),];
-  refGene <-refGene[refGene$V1!="chrY",];
+  refGene <-refGene[refGene[,1] %in% unique(read.table(TRE.path)[,1]),]
   refGene <- refGene[(refGene$V3-refGene$V2)>600,];
 
   bodies <- refGene;
@@ -55,7 +55,6 @@ get.raw.count <- function(bigWig.path, plus.files, minus.files, tf.names, tf.gen
   raw_counts <- do.call(cbind,mclapply(1:length(plus.files),
       function(i) getCounts.gene(plus.files[i], minus.files[i],intervals= bodies),
     mc.cores=length(plus.files)) );
-
   raw_counts<-as.matrix(raw_counts,drop=F);
 
   colnames(raw_counts) <-file.names;

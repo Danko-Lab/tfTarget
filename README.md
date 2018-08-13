@@ -164,7 +164,7 @@ Output
 	5) .TF.TRE.gene.txt for each TF whose motif is enriched in up/down TREs, 
 	   and the TREs that contains the motif, and the putative target genes for the TRE.
 	   We recommend users to further filter the target genes of log2foldchange (and the pvalues) 
-	   with the same diretion of change as the TRE by which it is regulated.
+	   with the same direction of change as the TRE by which it is regulated.
 	
 
 Documents

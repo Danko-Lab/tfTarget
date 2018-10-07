@@ -147,9 +147,11 @@ Optional arguments:
 		Default=50000.
 	-closest.N: use this tag to report only the first nth genes to the TRE, can be used in combination with -dist. 
 		Default is 2. To disable it, use "-closest.N off".
-	-pval.gene: use this tag to report only genes that are significantly differentially transcribed genes 1) at the same direction as the regulator TRE, and 2) with adjusted pval lower than the cutoff specified. Default is 0.05. To disable it, use "-pval.gene off".
-	
-	The default parameters are chosen based on the ChRO-seq paper "https://www.biorxiv.org/content/early/2018/05/13/185991".
+	-pval.gene: use this tag to report only genes that are significantly differentially transcribed genes 
+		1) at the same direction as the regulator TRE, and 
+		2) with adjusted pval lower than the cutoff specified. 
+		Default is 0.05. To disable it, use "-pval.gene off".
+	The default parameters were chosen based on the ChRO-seq paper "https://www.biorxiv.org/content/early/2018/05/13/185991".
 	
 	
 	

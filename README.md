@@ -143,7 +143,7 @@ Optional arguments:
 		Default=0.01	
 	
 	Optional mapTF arguments:	
-	-dist: the distance cutoff (in base pair) for asscoiating TRE to the nearest annotated transcriptional start site. 
+	-dist: the distance cutoff (in base pair) for associating TRE to the nearest annotated transcriptional start site. 
 		Default=50000.
 	-closest.N: use this tag to report only the first nth genes to the TRE, can be used in combination with -dist. 
 		Default is 2. To disable it, use "-closest.N off".

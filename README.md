@@ -47,7 +47,7 @@ Requires
 	
 	example: 
 	```````
-	R --vanilla --slave --args Drosophila_melanogaster < get.tfs.R
+	R --vanilla --slave --args Mus_musculus < get.tfs.R
 	```````
 	
 	The look-up table for species name can be found here: 

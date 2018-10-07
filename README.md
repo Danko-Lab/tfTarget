@@ -118,36 +118,41 @@ Optional arguments:
 
 	Optional system arguments:
 	-bigWig.path: path to the bigWig files. 
-		default="./"
+		Default="./"
 	-ncores: number of threads to use. 
-		default=1.
+		Default=1.
 	-deseq: Use this tag indicates to run DEseq2 only. 
-		No arugment is required. default is off.
+		No arugment is required. Default is off.
 	-rtfbsdb: Use this tag indicates to run DEseq2 and then rtfbsdb only. 
-		No arugment is required. default is off.
+		No arugment is required. Default is off.
 	
 	Optional DEseq2 arguments:
 	-pval.up: adjusted pvalue cutoff below which indicates differentially transcribed TREs. 
-		default=0.01.
+		Default=0.01.
 	-pval.down: adjusted pvalue cutoff above which indicates TREs that are not significantly changed between query and control. 
-		default=0.1
+		Default=0.1
 	
 	Optional rtfbsdb arguments:
 	-tfs.path: use this tag to specify tfs object from non-Homo sapiens species. 
 		Can be prepared using get.tfs.R. See the "requires" section above.
 	-cycles: how many cycles to run GC-subsampled motif enrichment test. 
-		default=2.
+		Default=2.
 	-mTH: threshold over which the TF motif is defined as significant different from the HMM background. 
-		default=7.
+		Default=7.
 	-fdr.cutoff: cutoff of the median of pvalues from multiple GC-subsampled runs, above which defines significantly enriched motifs.
+		Default=0.05	
 	
-	Optional mapTF arguments:
-	-dist: the distance cutoff for asscoiating TRE to the nearest annotated transcriptional start site. 
-		default=1E6.
+	Optional mapTF arguments:	
+	-dist: the distance cutoff (in base pair) for asscoiating TRE to the nearest annotated transcriptional start site. 
+		Default=50000.
 	-closest.N: use this tag to report only the first nth genes to the TRE, can be used in combination with -dist. 
-		default is off.
+		Default is 2. To disable it, use "-closest.N off".
+	-pval.gene: use this tag to report only genes that are significantly differentially transcribed genes 1) at the same direction as the regulator TRE, and 2) with adjusted pval lower than the cutoff specified. Default is 0.05. To disable it, use "-pval.gene off".
 	
-
+	The default parameters are chosen based on the ChRO-seq paper "https://www.biorxiv.org/content/early/2018/05/13/185991".
+	
+	
+	
 
 
 Output

@@ -96,11 +96,11 @@ Required arguments:
 
 	-query: query file names of PRO-seq in bigWig format, ordered by plus and minus pairings, 
 		e.g. query1.plus.bw query1.minus.bw query2.plus.bw query2.minus.bw ... 
-		(The default directory is the current working directory, use -bigWig.path to speficy if otherwise.)
+		(The default directory is the current working directory, use -bigWig.path to specify if otherwise.)
 
 	-control: control file names of PRO-seq in bigWig format, ordered by plus and minus pairings, 
 		e.g. control1.plus.bw control1.minus.bw control2.plus.bw control2.minus.bw ...
-		(The default directory is the current working directory, use -bigWig.path to speficy if otherwise.)
+		(The default directory is the current working directory, use -bigWig.path to specify if otherwise.)
 
 	-prefix: prefix for the output pdfs and txts. 
 	

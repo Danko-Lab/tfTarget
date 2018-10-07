@@ -140,7 +140,7 @@ Optional arguments:
 	-mTH: threshold over which the TF motif is defined as significant different from the HMM background. 
 		Default=7.
 	-fdr.cutoff: cutoff of the median of pvalues from multiple GC-subsampled runs, above which defines significantly enriched motifs.
-		Default=0.05	
+		Default=0.01	
 	
 	Optional mapTF arguments:	
 	-dist: the distance cutoff (in base pair) for asscoiating TRE to the nearest annotated transcriptional start site. 

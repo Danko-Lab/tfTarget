@@ -90,7 +90,7 @@ install_github("Danko-Lab/tfTarget/tfTarget")
 Usage
 ----------
 
-To use the tfTarget package, after installing tfTarget package, simply run "R --vanilla --slave --args ... < main.R" under the directory of main.R, with ... specifying arguments for tfTarget detailed as below.
+To use the tfTarget package, after installing tfTarget package, simply run "bash run_tfTarget.bsh ... " under the directory of bash run_tfTarget.bsh and main.R, with ... specifying arguments for tfTarget detailed as below.
 
 Required arguments: 
 

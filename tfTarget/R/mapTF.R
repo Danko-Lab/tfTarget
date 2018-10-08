@@ -1,4 +1,4 @@
-get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff, closest.N){
+get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff, closest.N, gene.pval.cutoff, up.down){
 
   #remove the lfcSE and stat column to avoid being interprated as bed12 format by bedtools
   
@@ -26,9 +26,6 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
     distance <- closest.tab[ ,(ncol(closest.tab)-1)]
     closest.tab <- closest.tab[distance <= distance.cutoff, ]
   	
-    #closest.tab<-closest.tab[!is.na(closest.tab$V21),]
-    return(closest.tab)
-  	
   }
   
   else{
@@ -53,15 +50,21 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
     unlink(enh.bed.file)
     unlink(enh.ext.bed.file)
     unlink(gene.bed.file)
-    return(closest.tab)
   
   }
+    
+  if(!is.null(gene.pval.cutoff)) {
+  	closest.tab<-closest.tab[!is.na(closest.tab$V17) & closest.tab$V17<gene.pval.cutoff,]
+  	if(up.down=="up") closest.tab<-closest.tab[closest.tab$V15>0,]
+  	if(up.down=="down") closest.tab<-closest.tab[closest.tab$V15<0,]
+  }
   
+  return(closest.tab)
   
 }
 
 
-mapTF<-function(tfTar, out.prefix=NULL, distance.cutoff=1E6, closest.N =NULL){
+mapTF<-function(tfTar, out.prefix=NULL, distance.cutoff, closest.N, gene.pval.cutoff){
 
   if(class(tfTar)!="tfTarget")
      stop("The first parameter is not a 'tfTarget' object!");
@@ -75,12 +78,16 @@ mapTF<-function(tfTar, out.prefix=NULL, distance.cutoff=1E6, closest.N =NULL){
   up.gene.tab   <- get.proximal.genes( enh.bed = tfTar$enh.up.bed,
                        gene.deseq.bed.sorted = tfTar$deseq.table.gene,
                        distance.cutoff = distance.cutoff,
-                       closest.N = closest.N);
+                       closest.N = closest.N, 
+                       gene.pval.cutoff= gene.pval.cutoff,
+                       up.down="up");
 
   down.gene.tab <- get.proximal.genes( enh.bed = tfTar$enh.down.bed,
                        gene.deseq.bed.sorted = tfTar$deseq.table.gene,
                        distance.cutoff = distance.cutoff,
-                       closest.N = closest.N);
+                       closest.N = closest.N, 
+                       gene.pval.cutoff= gene.pval.cutoff,
+                       up.down="down");
 
   TRE.genes.tab <- rbind.data.frame(up.gene.tab, down.gene.tab);
 
@@ -107,7 +114,15 @@ mapTF<-function(tfTar, out.prefix=NULL, distance.cutoff=1E6, closest.N =NULL){
 
   if(!is.null(out.prefix))
   {
-    TF.TRE.gene.tab.filename <- paste(out.prefix,".TF.TRE.gene.txt", sep="")
+  	if(is.null(closest.N)) closest.N<-"off"
+  	if(is.null(gene.pval.cutoff)) gene.pval.cutoff <-"off"
+  	  	
+  	txt.name <- paste( out.prefix,
+                    "dist", distance.cutoff,
+                    "closest.N", closest.N,
+                    "gene.pval", gene.pval.cutoff,
+                     sep="_");
+    TF.TRE.gene.tab.filename <- paste(txt.name, ".TF.TRE.gene.txt", sep="")
     write.table( TF.TRE.gene.tab.short, file = TF.TRE.gene.tab.filename, col.names = T, row.names = F, quote = F,sep="\t" )
   }
 

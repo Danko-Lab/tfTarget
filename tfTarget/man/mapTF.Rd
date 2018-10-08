@@ -9,8 +9,9 @@ mapTF
 \usage{
 mapTF(tfTar, 
       out.prefix = NULL, 
-      distance.cutoff = 1e+06, 
-      closest.N = NULL)
+      distance.cutoff, 
+      closest.N,
+           gene.pval.cutoff)
 }
 \arguments{
   \item{tfTar}{tfTarget object obtained by \code\link{diffTXN}}

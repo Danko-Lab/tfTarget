@@ -241,10 +241,10 @@ cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH
        symkey = F,
        symbreaks = T,
        scale = "none",
-       margins=c(10,10),
+       margins=c(15,15),
        key.xlab="correlation coefficient",
-       cexRow = 0.2 + 1/log10(nrow(cor.mat)+1),
-       cexCol = 0.2 + 1/log10(ncol(cor.mat)+1));
+       cexRow = 0.2 + 1.5/log10(nrow(cor.mat)+1),
+       cexCol = 0.2 + 1.5/log10(ncol(cor.mat)+1));
 
   dev.off();
   motif.df.ordered<-motif.df[rev(hist.order$rowInd),];

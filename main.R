@@ -17,9 +17,11 @@ MTH = 7
 Run.repeats = 2
 Pval.cutoff.up = 0.01
 Pval.cutoff.down = 0.1
-Fdr.cutoff = 0.05
-Closest.N = NULL
-Distance.cutoff = 1E6
+Fdr.cutoff = 0.01
+Closest.N = 2
+Distance.cutoff = 50E3
+Gene.pval.cutoff = 0.05
+
 deseq.only = F
 rtfbsdb.only = F
 Tfs.path =system.file("extdata", "tfs.rdata", package="tfTarget")
@@ -27,7 +29,25 @@ Tfs.path =system.file("extdata", "tfs.rdata", package="tfTarget")
 args<-commandArgs(TRUE)
 
 tag.pos <- which(sapply(args,FUN=function(x) substr(x,1,1)=="-" ))
+
+
+#check variables not understand,e.g. misspelling
+
+all.args<-c("-query","-control","-prefix","-TRE.path","-gene.path",
+		"-2bit.path","-bigWig.path","-ncores","-deseq","-rtfbsdb",
+		"-tfs.path","-mTH","-cycles","-pval.up","-pval.down","-fdr.cutoff",
+		"-dist","-closest.N","-pval.gene")
+all.tags<-args[tag.pos]
+
+unmatched.tags <- all.tags[!all.tags %in% all.args]
+
+if(length(unmatched.tags)>0) {
+	print("Error! The following tags are not understood. Please check the spelling.")
+	stop(unmatched.tags)
+}
+
 tag.pos <- c(tag.pos,length(args)+1)
+
 
 #assign required arguments
 
@@ -45,19 +65,37 @@ File.twoBit = args[which(args=="-2bit.path")+1]
 
 #assign optional arguments
 
+#optional system parameters
 if ("-bigWig.path" %in% args ) BigWig.path = args[which(args=="-bigWig.path")+1]
 if ("-ncores" %in% args ) Ncores = as.numeric(args[which(args=="-ncores")+1])
+if ("-deseq" %in% args ) deseq.only = T
+if ("-rtfbsdb" %in% args ) rtfbsdb.only = T
+if ("-tfs.path" %in% args ) Tfs.path = args[which(args=="-tfs.path")+1]
+
+#optional rtfbsdb parameters
 if ("-mTH" %in% args ) MTH = as.numeric(args[which(args=="-mTH")+1])
 if ("-cycles" %in% args ) Run.repeats = as.numeric(args[which(args=="-cycles")+1])
 if ("-pval.up" %in% args ) Pval.cutoff.up = as.numeric(args[which(args=="-pval.up")+1])
 if ("-pval.down" %in% args ) Pval.cutoff.down = as.numeric(args[which(args=="-pval.down")+1])
 if ("-fdr.cutoff" %in% args ) Fdr.cutoff = as.numeric(args[which(args=="-fdr.cutoff")+1])
-if ("-closest.N" %in% args ) Closest.N = as.numeric(args[which(args=="-closest.N")+1])
-if ("-dist" %in% args ) Distance.cutoff = as.numeric(args[which(args=="-dist")+1])
-if ("-deseq" %in% args ) deseq.only = T
-if ("-rtfbsdb" %in% args ) rtfbsdb.only = T
-if ("-tfs.path" %in% args ) Tfs.path = args[which(args=="-tfs.path")+1]
 
+
+#optional TRE to gene parameters
+if ("-dist" %in% args ) Distance.cutoff = as.numeric(args[which(args=="-dist")+1])
+
+if ("-closest.N" %in% args ) {
+	if (args[which(args=="-closest.N")+1]=="off") {
+		Closest.N = NULL } else {
+		Closest.N = as.numeric(args[which(args=="-closest.N")+1])
+	}
+}	
+
+if ("-pval.gene" %in% args ) {
+	if (args[which(args=="-pval.gene")+1]=="off") {
+		Gene.pval.cutoff = NULL } else {
+		Gene.pval.cutoff = as.numeric(args[which(args=="-pval.gene")+1])
+	}
+}
 
 
 load(Tfs.path)
@@ -92,6 +130,12 @@ if(is.null(Closest.N)) {
 	cat("-closet.N=", Closest.N, "\n")
 }
 
+if(is.null(Gene.pval.cutoff)) {
+	cat("-pval.gene= off \n")
+} else {
+	cat("-pval.gene=", Gene.pval.cutoff, "\n")
+}
+
 cat("\n")
 cat("running using ", Ncores, " cores", "\n")
 
@@ -118,7 +162,7 @@ if(!deseq.only){
 	if(!rtfbsdb.only){
 		#link TF, TRE and Gene
 		print("associating TFs to TREs and genes")
-		tfTar <- mapTF( tfTar, Prefix, Distance.cutoff, Closest.N);
+		tfTar <- mapTF( tfTar, Prefix, Distance.cutoff, Closest.N, Gene.pval.cutoff);
 	}
 }
 

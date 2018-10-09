@@ -241,15 +241,16 @@ cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH
        symkey = F,
        symbreaks = T,
        scale = "none",
-       margins=c(15,15),
+       margins=c(12,12),
        key.xlab="correlation coefficient",
-       cexRow = 0.2 + 1.5/log10(nrow(cor.mat)+1),
-       cexCol = 0.2 + 1.5/log10(ncol(cor.mat)+1));
+       key.title="",
+       cexRow = 0.2 + 1.2/log10(nrow(cor.mat)+1),
+       cexCol = 0.2 + 1.2/log10(ncol(cor.mat)+1));
 
   dev.off();
   motif.df.ordered<-motif.df[rev(hist.order$rowInd),];
 
-  pdf.name<-paste(pdf.name,".motif.ordered.pdf",sep="");
+  pdf.name<-paste(pdf.name,".motif.pdf",sep="");
   plot_motif_table(motif.df.ordered, tfs=tfs, pdf.name= pdf.name);
 
   return(NULL);

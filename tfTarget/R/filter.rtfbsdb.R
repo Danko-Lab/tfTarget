@@ -60,8 +60,8 @@ get.motif.df<-function(motif.list, fdr.cutoff, sites.num.cutoff, exp.cutoff, plu
 
   tf.exp.mat<-get.raw.count(bigWig.path= bigWig.path, plus.files=c(plus.files.query, plus.files.control), minus.files=c(minus.files.query, minus.files.control), tf.names= df.motif[,2], tf.gene.path)
   
-  if.exp.query<-apply(tf.exp.mat[,c(1:length(plus.files.query))]> exp.cutoff, 1, prod)
-  if.exp.control<-apply(tf.exp.mat[,-c(1:length(plus.files.query))]> exp.cutoff, 1, prod)
+  if.exp.query<-apply(tf.exp.mat[,c(1:length(plus.files.query)),drop=F]> exp.cutoff, 1, prod)
+  if.exp.control<-apply(tf.exp.mat[,-c(1:length(plus.files.query)),drop=F]> exp.cutoff, 1, prod)
   
   if.exp<- if.exp.query+if.exp.control
 

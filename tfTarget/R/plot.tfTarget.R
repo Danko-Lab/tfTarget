@@ -72,52 +72,8 @@ tfbs_to_bed <- function(sites)
   return(bed)
 }
 
-comparative_scanDb_rtfbs_pos <- function( tfbs,
-          file.twoBit,
-          positive.bed,
-          negative.bed,
-          positive.ms = NULL,
-          negative.ms = NULL,
-          motif.idx=1:1882,
-          file.prefix = NA,
-          ncores = 1,
-          threshold = NA,
-          background.order = 2)
-{
-  #default threshold.type = "score"
-  stopifnot(class(tfbs) == "tfbs")
 
-  # read sequences
-  positive.ms = read.seqfile.from.bed(positive.bed, file.twoBit)
-  negative.ms = read.seqfile.from.bed(negative.bed, file.twoBit)
-
-  # compute background models
-  both.ms = concat.ms(positive.ms, negative.ms)
-  background.mm = build.mm(both.ms, background.order)
-
-
-  # iterate over TF set
-  binding_all <- mclapply(motif.idx, function(i, ...) {
-    # get PWM information
-    pwm = tfbs@pwm[[i]];
-
-    motif.id<-tfbs@mgisymbols[i];
-    motif.name<-as.character(tfbs@tf_info$TF_Name[i]);
-
-    pos.sites = score.ms(positive.ms, pwm, background.mm, threshold = threshold);
-
-    result.bed = tfbs_to_bed(pos.sites);
-    result.bed$motif.name <- motif.name;
-    result.bed$motif.id <- motif.id;
-    result.bed$motif.idx<-i;
-    return(result.bed);
-  }, mc.cores = ncores)
-
-  return(binding_all)
-}
-
-
-locate.TF<-function(positive.bed, negative.bed, motif.id, half.size, mTH, ncores, tfbs, file.twoBit,return.type="list"){
+locate.TF<-function(positive.bed, negative.bed, motif.id, half.size, mTH, ncores, tfbs, file.twoBit,return.type="list", background.order=2){
 
   stopifnot(class(tfbs) == "tfbs");
 
@@ -126,16 +82,27 @@ locate.TF<-function(positive.bed, negative.bed, motif.id, half.size, mTH, ncores
   negative.ms =read.seqfile.from.bed(negative.bed, file.twoBit);
 
   motif.idx <- match(motif.id, tfbs@ mgisymbols);
+ 
+  #compute background models
+  both.ms = concat.ms(positive.ms, negative.ms)
+  background.mm = build.mm(both.ms, background.order)
 
-  r.comp <- comparative_scanDb_rtfbs_pos( tfbs,
-              file.twoBit,
-              positive.bed,
-              negative.bed,
-              positive.ms,
-              negative.ms,
-              motif.idx,
-              ncores = ncores,
-              threshold = mTH)
+  # iterate over TF set
+  r.comp <- mclapply(motif.idx, function(i, ...) {
+    # get PWM information
+    pwm = tfbs@pwm[[i]];
+
+    motif.id<-tfbs@mgisymbols[i];
+    motif.name<-as.character(tfbs@tf_info$TF_Name[i]);
+
+    pos.sites = score.ms(positive.ms, pwm, background.mm, threshold = mTH);
+
+    result.bed = tfbs_to_bed(pos.sites);
+    result.bed$motif.name <- motif.name;
+    result.bed$motif.id <- motif.id;
+    result.bed$motif.idx<-i;
+    return(result.bed);
+  }, mc.cores = ncores)
 
   if(return.type=="list")
   	return(r.comp)
@@ -214,7 +181,7 @@ cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH
   if(length(query.motifs)<=1)
     return(NULL)
 
-  TF.tab <- locate.TF( changed.bed, unchanged.bed, query.motifs, half.size, mTH, ncores, tfs, file.twoBit,return.type="list");
+  TF.tab <- locate.TF( changed.bed, unchanged.bed, query.motifs, half.size, mTH, ncores, tfs, file.twoBit);
 
   if(is.null(pdf.name))
     return(do.call(rbind.data.frame,TF.tab))

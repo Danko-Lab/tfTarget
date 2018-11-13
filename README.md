@@ -87,6 +87,14 @@ library("devtools");
 install_github("Danko-Lab/tfTarget/tfTarget")
 ```````
 
+If you want to run bash script (run_tfTarget.bsh), you have to download all files after the package is installed. 
+
+```````
+git clone https://github.com/Danko-Lab/tfTarget.git
+cd tfTarget
+```````
+
+
 Usage
 ----------
 

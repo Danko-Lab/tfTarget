@@ -80,14 +80,14 @@ Requires
 Installation
 --------
 
-* If all dependent packages and commands have been installed, please use the following codes to install/update the package. 
+* If all dependent packages and commands have been installed, please use the following codes to install/update the package in R terminal. 
 
 ```````
 library("devtools");
 install_github("Danko-Lab/tfTarget/tfTarget")
 ```````
 
-If you want to run bash script (run_tfTarget.bsh), you have to download all files after the package is installed. 
+If you want to run bash script (run_tfTarget.bsh), you have to download all files after the package is installed, Use the following command in UNIX/Linux terminal. 
 
 ```````
 git clone https://github.com/Danko-Lab/tfTarget.git

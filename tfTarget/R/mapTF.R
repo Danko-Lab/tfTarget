@@ -40,10 +40,9 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
     
     write.table(enh.ext.bed, file = enh.ext.bed.file, col.name=F, row.name=F, sep="\t", quote=F)
 
-    get.proximal.command<-paste("cat", gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10}' | sort-bed - | bedtools closest -t \"all\" -d -a", enh.ext.bed.file, "-b stdin | awk 'BEGIN{OFS=\"\t\"} $NF==0 {$NF=\"\"; print $0}' | bedtools overlap -i stdin -cols 5,6,12,13")
-
+    get.proximal.command<-paste("cat", gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10}' | sort-bed - | bedtools closest -t \"all\" -d -a", enh.ext.bed.file, "-b stdin | awk 'BEGIN{OFS=\"\t\"} $NF==0 {$NF=\"\"; print $0}' | bedtools overlap -i stdin -cols 5,6,12,13 | awk 'BEGIN{OFS=\"\t\"} {for (i=4; i<=NF; i++) printf $i \"\t\"; print \"\"}'" )
+    
     closest.tab <- read.table(pipe(get.proximal.command))
-    closest.tab<-closest.tab[,-c(1:3)]
     
     closest.tab[,ncol(closest.tab)] <- sapply(closest.tab[,ncol(closest.tab)],function(overlap) -(min(0, overlap)) )
     

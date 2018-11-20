@@ -9,7 +9,7 @@ Chromatin run-on and sequencing maps the transcriptional regulatory landscape of
 
 Tinyi Chu, Edward J Rice, Gregory T Booth, Hans H Salamanca, Zhong Wang, Leighton J Core, Sharon L Longo, Robert J Corona, Lawrence S Chin, John T Lis, Hojoong Kwak, Charles Danko
 
-https://www.nature.com/articles/s41588-018-0244-3
+Nature Genetics  https://www.nature.com/articles/s41588-018-0244-3
 
 
 

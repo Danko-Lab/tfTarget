@@ -57,11 +57,12 @@ Requires
 
 	To prepare the input TRE files, users are recommended to merge dREG sites from query and control samples, 
 	using bedtools merge (http://bedtools.readthedocs.io/en/latest/content/tools/merge.html), e.g.,
-```````	
+        
+	```````	
 	cat query.dREG.peak.score.bed control.dREG.peak.score.bed \
 	| LC_COLLATE=C sort -k1,1 -k2,2n \
 	| bedtools merge -i stdin > merged.dREG.bed
-```````	
+        ```````	
 
 	please notice to use `zcat` for bed.gz files.
 
@@ -69,24 +70,25 @@ Requires
 	https://www.gencodegenes.org/releases/current.html
 	
 	gtf.gz files can be converted to the gene annotation file for tfTarget input using the following command as an example:
-```````	
+        
+	```````	
 	zcat gencode.v19.annotation.gtf.gz \
 	|  awk 'OFS="\t" {if ($3=="gene") {print $1,$4-1,$5,$10,$18,$7}}' \
 	| tr -d '";' > gencode.v19.annotation.bed
-```````
+        ```````
 
 The following table illustrates the head of 'gencode.v19.annotation.bed', which includes chromosome, start, end position, gene id, gene name and strand. 
 
-```````	
-chr1    11868   14412   ENSG00000223972.4       DDX11L1 +
-chr1    14362   29806   ENSG00000227232.4       WASH7P  -
-chr1    29553   31109   ENSG00000243485.2       MIR1302-11      +
-chr1    34553   36081   ENSG00000237613.2       FAM138A -
-chr1    52472   54936   ENSG00000268020.2       OR4G4P  +
-chr1    62947   63887   ENSG00000240361.1       OR4G11P +
-chr1    69090   70008   ENSG00000186092.4       OR4F5   +
-chr1    89294   133566  ENSG00000238009.2       RP11-34P13.7   
-```````	
+        ```````	
+        chr1    11868   14412   ENSG00000223972.4       DDX11L1 +
+        chr1    14362   29806   ENSG00000227232.4       WASH7P  -
+        chr1    29553   31109   ENSG00000243485.2       MIR1302-11      +
+        chr1    34553   36081   ENSG00000237613.2       FAM138A -
+        chr1    52472   54936   ENSG00000268020.2       OR4G4P  +   
+        chr1    62947   63887   ENSG00000240361.1       OR4G11P +
+        chr1    69090   70008   ENSG00000186092.4       OR4F5   +
+        chr1    89294   133566  ENSG00000238009.2       RP11-34P13.7   
+        ```````	
 
 
 * bigWigs files of query and control replicates. The same requirement for preparing the input files for dREG. 

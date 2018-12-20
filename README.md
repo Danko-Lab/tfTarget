@@ -62,7 +62,7 @@ Requires
 	| LC_COLLATE=C sort -k1,1 -k2,2n \
 	| bedtools merge -i stdin > merged.dREG.bed
 ```````	
-	*Use zcat for bed.gz files.
+	please notice to use `zcat` for bed.gz files.
 
 * Gene annotation file in bed6 format. Can be prepared from gencode or Refseq gtf files. We recommend to use gene ID and gene name for the 4th and 5th columns. The information will show up in the output.
 	https://www.gencodegenes.org/releases/current.html

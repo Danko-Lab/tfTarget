@@ -74,7 +74,7 @@ Requires
 	| tr -d '";' > gencode.v19.annotation.bed
 ```````
 
-The following table illustrate the head of 'gencode.v19.annotation.bed', which includes chromosome, start, end position, gene id, gene name and strand. 
+The following table illustrates the head of 'gencode.v19.annotation.bed', which includes chromosome, start, end position, gene id, gene name and strand. 
 
 ```````	
 chr1    11868   14412   ENSG00000223972.4       DDX11L1 +

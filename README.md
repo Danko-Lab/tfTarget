@@ -11,6 +11,9 @@ Tinyi Chu, Edward J Rice, Gregory T Booth, Hans H Salamanca, Zhong Wang, Leighto
 
 Nature Genetics  https://www.nature.com/articles/s41588-018-0244-3
 
+--------
+
+A detailed example of running dREG and tfTarget from raw sequencing data can be found at https://doi.org/10.1002/cpbi.70 .
 
 
 Workflow of tfTarget

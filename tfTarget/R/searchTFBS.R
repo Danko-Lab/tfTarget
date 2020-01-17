@@ -365,6 +365,12 @@ searchTFBS <- function(tfTar, tfs, file.twoBit, pval.cutoff.up=0.01, pval.cutoff
   enh.up.bed      <- deseq.table.sig[deseq.table.sig$TRE.log2FoldChange>0,]
   enh.down.bed    <- deseq.table.sig[deseq.table.sig$TRE.log2FoldChange<0,]
 
+  # remove negative coordinates
+  enh.unc.bed[,2]<-sapply(enh.unc.bed[,2],function(x)max(x,0))
+  enh.up.bed[,2]<-sapply(enh.up.bed[,2],function(x)max(x,0))
+  enh.down.bed[,2]<-sapply(enh.down.bed[,2],function(x)max(x,0))
+
+
   motif.list.up <- tfbs.enrichmentTest.multiple(tfs, file.twoBit,  enh.up.bed, enh.unc.bed, mTH, min.size, run.repeats, ncores);
   motif.list.down <- tfbs.enrichmentTest.multiple(tfs, file.twoBit, enh.down.bed, enh.unc.bed, mTH, min.size, run.repeats, ncores);
 

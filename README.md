@@ -46,7 +46,7 @@ Requires
     
 	http://hgdownload.cse.ucsc.edu/downloads.html
 	
-* tfs object file for the species of interests, in .rdata format, which contains the curated transcription factor motifs database. For Homo_sapiens, it is provided by tfTarget package, and will be used by default. For others species, we provide a convenient script get.tfs.R to call rtfbsdb, and generate the species.tfs.rdata. Please use `--tfs.path` to specify the tfs object file rather than Homo_sapiens when you call `run_tfTarget.bsh` 
+* tfs object file for the species of interests, in .rdata format, which contains the curated transcription factor motifs database. For Homo_sapiens, it is provided by tfTarget package, and will be used by default. For others species, we provide a convenient script get.tfs.R to call rtfbsdb, and generate the species.tfs.rdata. Please use `-tfs.path` to specify the tfs object file rather than Homo_sapiens when you call `run_tfTarget.bsh` 
 	
 	example: 
 	```````

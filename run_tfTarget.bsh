@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 18 ]; then
     echo ""
-    echo "USAGE: bash run_dREG.bsh -query [query.bigWig] -control [control.bigWig] -prefix [prefix] -TRE.path [dreg_path] -gene.path [gene_path] -2bit.path [twoBit_path]"
+    echo "USAGE: bash run_tfTarget.bsh -query [query.bigWig] -control [control.bigWig] -prefix [prefix] -TRE.path [dreg_path] -gene.path [gene_path] -2bit.path [twoBit_path]"
 
     echo ""
     echo "minimum arguments:"

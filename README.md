@@ -51,6 +51,8 @@ Requires
 	example: 
 	```````
 	R --vanilla --slave --args Mus_musculus < get.tfs.R
+	
+	R --vanilla --slave --args your_species your_cisbp_zip_file < get.tfs.R
 	```````
 	
 	The look-up table for species name can be found here: 

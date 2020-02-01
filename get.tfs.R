@@ -1,15 +1,24 @@
-
 library("rtfbsdb")
+
+## format R --args species cisbp.zip.file
 
 args<-commandArgs(TRUE)
 
-if(args %in% c("Homo_sapiens", "Mus_musculus")) {
-	db <- CisBP.extdata(args)} else {
-		db<-CisBP.download(args)
-	}
-	
-tfs <- tfbs.createFromCisBP(db)
+if(args[1] %in% c("Homo_sapiens", "Mus_musculus")) {
+   db <- CisBP.extdata(args)} else 
+{
+   if (NROW(args)==1)
+     db <- CisBP.download(args[1])
+   else
+   {
+      if (file.exists(args[2]))
+         db <- CisBP.zipload(args[2], species=args[1])
+      else
+         stop(paste(args[2], "is not existing for", args[1], ".\n"))   
+   }      
+}
 
+tfs <- tfbs.createFromCisBP(db)
 
 #merge redundant motif IDs
 
@@ -32,8 +41,8 @@ tfs@filename<-tfs@filename[match(tf_info.uniq$Motif_ID,tf_info.ori$Motif_ID)]
 tfs@pwm<-tfs@pwm[match(tf_info.uniq$Motif_ID,tf_info.ori$Motif_ID)]
 
 
-save(tfs, file=paste(args,".tfs.rdata",sep=""))
-
+save(tfs, file=paste(args[1],".tfs.rdata",sep=""))
+cat("TFS data is stored into", paste(args[1],".tfs.rdata",sep=""), ".\n");
 
 
 

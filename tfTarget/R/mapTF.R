@@ -17,7 +17,16 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
 
     get.closet.nth.command<-paste("cat" ,  gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10}' | sort-bed - | bedtools closest -t \"first\" -d -k", closest.N  ,"-a", enh.bed.file, "-b stdin")
 
-    closest.tab <- read.table(pipe(get.closet.nth.command))
+    closest.tab <- read.table(pipe(get.closet.nth.command), stringsAsFactors=FALSE)
+    closest.tab$uid=paste(closest.tab[,1],closest.tab[,2],sep=":");
+    closest.stat <- table(closest.tab$uid);
+    if(sum(closest.stat<closest.N)>0)
+    {
+       rem.chr <- names(closest.stat[closest.stat<closest.N]);
+       closest.tab <- closest.tab[is.na(match(closest.tab$uid, rem.chr)),]
+    }   
+    closest.tab$uid <- NULL;
+    
     unlink(enh.bed.file)
     unlink(gene.bed.file)
 
@@ -42,7 +51,7 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
 
     get.proximal.command<-paste("cat", gene.bed.file, "| awk 'BEGIN{OFS=\"\t\"} {print $1,$6==\"+\"?$2:$3-1,$6==\"+\"?$2+1:$3,$4,$5,$6,$7,$8,$9,$10}' | sort-bed - | bedtools closest -t \"all\" -d -a", enh.ext.bed.file, "-b stdin | awk 'BEGIN{OFS=\"\t\"} $NF==0 {$NF=\"\"; print $0}' | bedtools overlap -i stdin -cols 5,6,12,13 | awk 'BEGIN{OFS=\"\t\"} {for (i=4; i<=NF; i++) printf $i \"\t\"; print \"\"}'" )
     
-    closest.tab <- read.table(pipe(get.proximal.command))
+    closest.tab <- read.table(pipe(get.proximal.command), stringsAsFactors=FALSE)
     
     closest.tab[,ncol(closest.tab)] <- sapply(closest.tab[,ncol(closest.tab)],function(overlap) -(min(0, overlap)) )
     
@@ -51,9 +60,14 @@ get.proximal.genes <- function( enh.bed, gene.deseq.bed.sorted, distance.cutoff,
     unlink(gene.bed.file)
   
   }
-    
+
+  closest.tab$V14 <- as.numeric(closest.tab$V14)
+  closest.tab$V15 <- as.numeric(closest.tab$V15)
+  closest.tab$V16 <- as.numeric(closest.tab$V16)
+  closest.tab$V17 <- as.numeric(closest.tab$V17)
+
   if(!is.null(gene.pval.cutoff)) {
-  	closest.tab<-closest.tab[!is.na(closest.tab$V17) & closest.tab$V17<gene.pval.cutoff,]
+  	closest.tab<-closest.tab[!is.na(closest.tab$V17) & as.numeric(closest.tab$V17)<gene.pval.cutoff,]
   	if(up.down=="up") closest.tab<-closest.tab[closest.tab$V15>0,]
   	if(up.down=="down") closest.tab<-closest.tab[closest.tab$V15<0,]
   }

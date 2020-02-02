@@ -1,5 +1,35 @@
-
 library(tfTarget)
+
+remove_chrs_with_few_genes<-function( file.gene.path, file.tre.path, min.gene.count )
+{
+    library(data.table)
+
+    tb<- as.data.table(read.table(file.gene.path,stringsAsFactors=F))
+    tb.count <- tb[,length(V1), by=tb$V1];
+    colnames(tb.count)=c("V1", "count")
+    chr.few.name <- tb.count[ which(tb.count[,"count"] < min.gene.count),"V1"]
+    if (NROW(chr.few.name)>0)
+    {
+       # remove chromosome with few genes from the gene annotation file
+       tb.gene <- tb [ -which(tb$V1 %in% chr.few.name$V1),]
+
+       # remove chromosome with few genes from the TRE file (dREG)
+	   tb.tre <- read.table(file.tre.path, stringsAsFactors=F)
+       tb.tre <- tb.tre [ -which(tb.tre$V1 %in% chr.few.name$V1),]
+
+       #uni.chr <- intersect(unique(tb.gene$V1), unique(tb.tre$V1))
+       #tb.gene <- tb.gene [ !is.na(match(tb.gene$V1, uni.chr)),]
+       #tb.tre  <- tb.tre  [ !is.na(match(tb.tre$V1, uni.chr)),]
+       
+       file.gene.tmp <- tempfile(fileext=".bed")
+       write.table(tb.gene, file=file.gene.tmp, col.names=F, row.names=F, quote=F, sep="\t");
+       file.tre.tmp <- tempfile(fileext=".bed")
+       write.table(tb.tre, file=file.tre.tmp, col.names=F, row.names=F, quote=F, sep="\t");
+       return(c(file.gene.tmp, file.tre.tmp));
+    }
+    else
+       return(c(file.gene.path, file.tre.path) );
+}
 
 #system variables
 
@@ -100,17 +130,19 @@ if ("-pval.gene" %in% args ) {
 
 load(Tfs.path)
 
-
-
 print("input file info")
 cat("-bigWig.path:", BigWig.path, "\n")
 cat("-query, plus files=", Plus.files.query, "\n")
 cat("-query, minus files=", Minus.files.query, "\n")
 cat("-control, plus files=", Plus.files.control, "\n")
 cat("-control, minus files=", Minus.files.control, "\n")
+
+file.ret2 <- remove_chrs_with_few_genes( Gene.path, TRE.path, Closest.N )
+Gene.path <- file.ret2[1]
+TRE.path <- file.ret2[2];
+
 cat("-TRE.path=", TRE.path, "\n")
 cat("-gene.path=", Gene.path, "\n")
-
 
 cat("\n")
 print("motif enrichment parameters");
@@ -118,6 +150,8 @@ cat("-tfs.path=", Tfs.path, "\n");
 cat("-mTH=", MTH, "\n");
 cat("-cycles=", Run.repeats, "\n");
 cat("-fdr.cutoff=", Fdr.cutoff, "\n");
+cat("-pval.up=", Pval.cutoff.up, "\n");
+cat("-pval.down=", Pval.cutoff.down, "\n");
 
 cat("\n")
 print("TRE-gene parameters");
@@ -149,7 +183,6 @@ if(!deseq.only){
 	#run motif enrichment tests
 	print("running rtfbsdb")
 	tfTar <- searchTFBS(tfTar, tfs, File.twoBit, Pval.cutoff.up, Pval.cutoff.down, Half.size, MTH, Min.size, Run.repeats, ncores=Ncores)
-
 
 	#filter and cluster motifs (link motif to TRE)
 	print( "filtering motifs" )

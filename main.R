@@ -11,11 +11,11 @@ remove_chrs_with_few_genes<-function( file.gene.path, file.tre.path, min.gene.co
     if (NROW(chr.few.name)>0)
     {
        # remove chromosome with few genes from the gene annotation file
-       tb.gene <- tb [ -which(tb$V1 %in% chr.few.name$V1),]
+       tb.gene <- tb [ ! (tb$V1 %in% chr.few.name$V1),]
 
        # remove chromosome with few genes from the TRE file (dREG)
 	   tb.tre <- read.table(file.tre.path, stringsAsFactors=F)
-       tb.tre <- tb.tre [ -which(tb.tre$V1 %in% chr.few.name$V1),]
+       tb.tre <- tb.tre [ !(tb.tre$V1 %in% chr.few.name$V1),]
 
        #uni.chr <- intersect(unique(tb.gene$V1), unique(tb.tre$V1))
        #tb.gene <- tb.gene [ !is.na(match(tb.gene$V1, uni.chr)),]

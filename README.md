@@ -6,7 +6,7 @@ Transcription factors (TFs) regulate complex programs of gene transcription by b
 Cloud Computing Service:
 --------
 
-We provide a computational gateway to run dREG on GPU server, the users don't need to install any software, only upload the bigWig files and wait for the results, it is simple and easy. Please click the link to try this site:
+We provide a computational gateway to run tfTarget on GPU server, the users don't need to install any software, only upload the bigWig files and wait for the results, it is simple and easy. Please click the link to try this site:
 
 https://dreg.dnasequence.org/
 

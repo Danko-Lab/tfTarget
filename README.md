@@ -3,6 +3,13 @@ tfTarget
 
 Transcription factors (TFs) regulate complex programs of gene transcription by binding to short DNA sequence motifs within transcription regulatory elements (TRE). Here we introduce tfTarget, a unified framework that identifies the "TF -> TRE -> target gene" networks that are differential regulated between two conditions, e.g. experimental vs. control, using PRO-seq/GRO-seq/ChRO-seq data as the input. The package provies a convenient interface for users without assuming knowledge with R environment, users can directly run the scipts in linux console. 
 
+Cloud Computing Service:
+--------
+
+We provide a computational gateway to run dREG on GPU server, the users don't need to install any software, only upload the bigWig files and wait for the results, it is simple and easy. Please click the link to try this site:
+
+https://dreg.dnasequence.org/
+
 Cite tfTarget:
 --------
 Chromatin run-on and sequencing maps the transcriptional regulatory landscape of glioblastoma multiforme

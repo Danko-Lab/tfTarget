@@ -1,178 +1,169 @@
-getCounts.TRE <- function(plus, minus, intervals) {
-  pl <- load.bigWig(plus);
-  mn <- load.bigWig(minus);
-  counts.plus <- bed.region.bpQuery.bigWig(pl, intervals, abs.value = TRUE);
-  counts.minus <- bed.region.bpQuery.bigWig(mn, intervals, abs.value = TRUE);
-  counts<-(counts.plus+ counts.minus);
-  unload.bigWig( pl );
-  unload.bigWig( mn );
-  
-  return(counts);
+get.gene.bed <- function(file.gene, file.tres, step=1000){
+
+    refGene <- read.table(file.gene)
+    if(ncol(refGene) < 6) stop("Genomic bed data should be in BED6 format")
+    
+    refGene <- refGene[,1:6]
+    colnames(refGene) <- c("gene.chrom", "gene.chromStart", "gene.chromEnd", "transcript.id","gene.name","gene.strand")
+    refGene <- refGene[grep("random|Un|hap", refGene$gene.chrom, invert=TRUE),]
+
+    #filter chromosome without bigwigs using TREs
+    refGene     <-refGene[refGene[,1] %in% unique(read.table(file.tres)[,1]),]
+
+    refGene.ex  <- refGene[(refGene$gene.chromEnd-refGene$gene.chromStart)<=step,]
+    bodies      <- refGene[(refGene$gene.chromEnd-refGene$gene.chromStart)>step,]
+    
+    bodies$gene.chromStart[bodies$gene.strand == "+"] <- bodies$gene.chromStart[bodies$gene.strand == "+"]+500
+    bodies$gene.chromEnd[bodies$gene.strand == "-"]   <- bodies$gene.chromEnd[bodies$gene.strand == "-"]-500
+    bodies <-unique(bodies)    
+    
+    list(bodies, refGene.ex)
+}   
+
+get.tres.bed <- function(file.tres){
+
+    TREs    <- read.table(file.tres)[,1:3]
+    TREs    <- center.bed(TREs,250,250)
+    TREs[,2]<- sapply(TREs[,2],function(x)max(x,0))
+    
+    colnames(TREs) <- c("tre.chrom", "tre.chromStart", "tre.chromEnd")
+    TREs
 }
 
-get.deseq.TRE.tab<-function(TRE.path, bigWig.path, plus.files.query, plus.files.control, minus.files.query, minus.files.control, ncores){
-
-  #prepare regions of TRE
-  TREs <- read.table(TRE.path)[,1:3]
-  TREs <- center.bed(TREs,250,250)
-  TREs[,2]<-sapply(TREs[,2],function(x)max(x,0))
-
-
-  #prepare file names
-  plus.files.query.full   <- paste(bigWig.path, plus.files.query, sep="/")
-  plus.files.control.full <- paste(bigWig.path, plus.files.control, sep="/")
-  minus.files.query.full  <- paste(bigWig.path, minus.files.query, sep="/")
-  minus.files.control.full<- paste(bigWig.path, minus.files.control, sep="/")
-
-  plus.files  <- c(plus.files.query.full, plus.files.control.full)
-  minus.files <- c(minus.files.query.full, minus.files.control.full)
-
-  file.names <- gsub(".bw","", gsub(".bigWig","", c(plus.files.query, plus.files.control)))
-  file.names <- gsub(".pl","", gsub(".plus","", file.names))
-  file.names <- gsub("_pl","", gsub("_plus","", file.names))
-
-  stopifnot(length(plus.files)==length(minus.files))
-
-  #get reads count and do deseq
-  raw_counts <- do.call(cbind,mclapply(1:length(plus.files),
-       function(i) getCounts.TRE(plus.files[i], minus.files[i],intervals= TREs),
-     mc.cores= ncores))
-
-  colnames(raw_counts) <- file.names
-
-  colData <- data.frame(Condition= c(rep("query",length(plus.files.query)), rep("control",length(plus.files.control))),
-                        row.names=colnames(raw_counts))
-
-  dds <- DESeqDataSetFromMatrix( countData= raw_counts, colData= colData, design= ~ Condition)
-
-  ## Set the reference condition as the normal brain.
-  dds$Condition <- relevel( dds$Condition, ref="control")
-
-  dds <- DESeq(dds)
-
-  res <- results(dds)
-
-  EL <- cbind.data.frame(TREs, res)
-  
-  colnames(EL) <- c("tre.chrom", "tre.chromStart", "tre.chromEnd",
-           "TRE.baseMean", "TRE.log2FoldChange", "TRE.lfcSE", "TRE.stat", "TRE.pvalue", "TRE.padj")
-
-  return(as.data.frame(EL))
-}
-
-getCounts.gene <- function(plus, minus, intervals) {
-  pl <- load.bigWig(plus)
-  mn <- load.bigWig(minus)
-  counts <- bed6.region.bpQuery.bigWig(pl, mn, intervals, abs.value = TRUE)
-  unload.bigWig( pl );
-  unload.bigWig( mn );
-  
-  return(counts);
-}
-
-
-
-get.deseq.gene.tab <-function(gene.path, bigWig.path, plus.files.query, plus.files.control, minus.files.query, minus.files.control, ncores){
-
-  #prepare regions of gene body
-  refGene <- read.table(gene.path)[,1:6]
-  refGene <- refGene[grep("random|Un|hap", refGene$V1, invert=TRUE),]
-  refGene.excluded <- refGene[(refGene$V3-refGene$V2)<=1000,]
-  refGene <- refGene[(refGene$V3-refGene$V2)>1000,]
-
- #filter chromosome without bigwigs using TREs
-  refGene <-refGene[refGene[,1] %in% unique(read.table(TRE.path)[,1]),]
-  
-  bodies <- refGene
-  bodies$V2[bodies$V6 == "+"] <- bodies$V2[bodies$V6 == "+"]+500
-  bodies$V3[bodies$V6 == "-"] <- bodies$V3[bodies$V6 == "-"]-500
-  bodies <-unique(bodies)
-
-  #prepare file names
-  plus.files.query.full   <- paste(bigWig.path, plus.files.query, sep="/")
-  plus.files.control.full <- paste(bigWig.path, plus.files.control, sep="/")
-  minus.files.query.full  <- paste(bigWig.path, minus.files.query, sep="/")
-  minus.files.control.full<- paste(bigWig.path, minus.files.control, sep="/")
-
-  plus.files  <- c(plus.files.query.full, plus.files.control.full)
-  minus.files <- c(minus.files.query.full, minus.files.control.full)
-
-  file.names <- gsub(".bw","", gsub(".bigWig","", c(plus.files.query, plus.files.control)))
-  file.names <- gsub(".pl","", gsub(".plus","", file.names))
-  file.names <- gsub("_pl","", gsub("_plus","", file.names))
-
-  stopifnot( length(plus.files) == length(minus.files) )
-
-  #get reads count and do deseq
-  raw_counts <- do.call(cbind,mclapply(1:length(plus.files),
-      function(i) getCounts.gene(plus.files[i], minus.files[i],intervals= bodies),
-    mc.cores= ncores))
-
-  colnames(raw_counts)<-file.names
-  colData <- data.frame(Condition= c(rep("query",length(plus.files.query)),
-                                     rep("control",length(plus.files.control))),
-                       row.names=colnames(raw_counts))
-
-  dds <- DESeqDataSetFromMatrix( countData= raw_counts, colData= colData, design= ~ Condition)
-
-  dds$Condition <- relevel( dds$Condition, ref="control") ## Set the reference condition as the normal brain.
-
-  dds <- DESeq(dds)
-
-  res <- results(dds)
-
-  EL <- cbind.data.frame(refGene, res)
-
-  refGene.excluded[,colnames(EL)[-c(1:6)]]<-NA
-  gene.tab<-rbind.data.frame(EL, refGene.excluded)
-
-  options(scipen =99)
-  gene.deseq.bed <-tempfile()
-  write.table(gene.tab,file= gene.deseq.bed, col.name=F, row.name=F, sep="\t", quote=F)
-  gene.tab<-read.table(pipe(paste( "LC_COLLATE=C sort -k1,1 -k2,2n", gene.deseq.bed)))
-  colnames(gene.tab) <- c("gene.chrom", "gene.chromStart", "gene.chromEnd",
-  						"transcript.id","gene.name","gene.strand",
-           				"gene.baseMean","gene.log2FoldChange", "gene.lfcSE", "gene.stat",
-           				"gene.pvalue", "gene.padj")
-  unlink(gene.deseq.bed)
-
-  return(gene.tab)
-}
-
-diffTXN <- function( TRE.path, gene.path, bigWig.path, plus.files.query, plus.files.control, minus.files.query, minus.files.control, out.prefix=NULL, ncores=3){
-
-  options(scipen =99);
-
-  deseq.table.TRE  <- get.deseq.TRE.tab(TRE.path, bigWig.path, plus.files.query,
-      plus.files.control, minus.files.query, minus.files.control, ncores)
-
-  if(!is.null(out.prefix))
-  {
-    TRE.tab.filename <- paste( out.prefix,".TRE.deseq.txt", sep="" )
-    write.table( deseq.table.TRE, file= TRE.tab.filename, col.names=T, row.names=F, quote=F, sep="\t")
-  }
-
-  deseq.table.gene<-NULL
-  if(!is.null(gene.path)) {
-  #if do deseq on genes
-    deseq.table.gene<-get.deseq.gene.tab(gene.path, bigWig.path, plus.files.query, plus.files.control, minus.files.query, minus.files.control, ncores)
-    if(!is.null( out.prefix ))
-    {
-      gene.tab.filename <- paste( out.prefix, ".gene.deseq.txt", sep="")
-      write.table(deseq.table.gene, file=gene.tab.filename,col.names=T,row.names=F,quote=F,sep="\t")
+fun.counts <- function(file.plus, file.minus, intervals) {
+        
+    pl  <- load.bigWig(file.plus)
+    mn  <- load.bigWig(file.minus)
+    
+    on.exit(unload.bigWig(pl))
+    on.exit(unload.bigWig(mn))
+        
+    if (dim(intervals)[2] == 3){
+       cts.pl    <- bed.region.bpQuery.bigWig(pl, intervals, abs.value = TRUE)
+       cts.mn    <- bed.region.bpQuery.bigWig(mn, intervals, abs.value = TRUE)
+       counts    <- cts.pl+ cts.mn
+    }else if(dim(intervals)[2] == 6){
+       counts    <- bed6.region.bpQuery.bigWig(pl, mn, intervals, abs.value = TRUE)
+    }else{
+       stop( "*: Genomic intervals should be in BED3 or BED6 format!") 
     }
-  }
+        
+    counts
+}
 
-  res.obj<-list(deseq.table.TRE = deseq.table.TRE,
-        deseq.table.gene = deseq.table.gene,
-        gene.path = gene.path,
-        bigWig.path = bigWig.path,
-        plus.files.query = plus.files.query,
-        plus.files.control = plus.files.control,
-        minus.files.query = minus.files.query,
-        minus.files.control = minus.files.control,
-        ncores= ncores)
+get.raw.counts <- function(region.bed, files.query.plus, files.query.minus, files.control.plus, files.control.minus, ncores =3 ){
 
-  class(res.obj)<-"tfTarget";
-  return(res.obj);
+    files.plus    <- c(files.query.plus, files.control.plus)
+    files.minus   <- c(files.query.minus, files.control.minus)
+    
+    #count reads between each region of TRE
+    raw.counts <- do.call(cbind,  mclapply(1:length(files.plus), function(i) 
+                                    fun.counts( file.plus   = files.plus[i], 
+                                                file.minus  = files.minus[i],
+                                                intervals   = region.bed),
+                                                mc.cores    = ncores))
+    
+    exp.names  <- c(sapply(1:(length(files.query.plus)), 
+                                function(i){paste("query.rep",i, sep="") } ),
+                    sapply(1:(length(files.control.plus)), 
+                                function(i){paste("control.rep",i, sep="") } ))
+
+    colnames(raw.counts) <- exp.names
+
+    raw.counts
+}
+
+dif.deseq2 <- function(files.query.plus, files.query.minus, files.control.plus, files.control.minus, region.bed, out.file, ncores=1){
+    
+    ## the data frame for deseq analysis
+    raw.counts <- get.raw.counts(region.bed, files.query.plus, files.query.minus, files.control.plus, files.control.minus, ncores= ncores)
+    
+    colData    <- data.frame(Condition  = c(rep("query",  length(files.query.plus)), 
+                                            rep("control",length(files.control.plus))),
+                             row.names  = colnames(raw.counts))    
+
+    ## do deseq analysis
+    dds <- DESeqDataSetFromMatrix( countData = raw.counts, 
+                                   colData   = colData, 
+                                   design    = ~ Condition)
+    dds$Condition <- relevel( dds$Condition, ref="control")
+    dds      <- DESeq(dds)
+    res      <- results(dds)
+    
+    rst.dif  <- cbind.data.frame(region.bed , res)
+  
+    rst.dif
+}
+
+
+dif.deseq2.tres <- function(files.query.plus, files.query.minus, files.control.plus, files.control.minus, TRE.file, out.file, ncores=1){
+    
+    ## searching regions
+    tres.region     <- get.tres.bed(TRE.file)
+
+    ## deseq analysis
+    tres.tab <- dif.deseq2(  files.query.plus, files.query.minus, files.control.plus, files.control.minus, tres.region, out.tres, ncores = ncores)
+
+    write.table( tres.tab, file= out.file, col.names=T, row.names=F, quote=F, sep="\t")
+
+    tres.tab
+}
+
+dif.deseq2.gene <- function(files.query.plus, files.query.minus, files.control.plus, files.control.minus, gene.file, TRE.file, out.file, ncores=1){
+    
+    ## searching regions
+    gene.region <- get.gene.bed(gene.file, TRE.file, step=600)
+    gene.bodies <- gene.region[[1]]
+    gene.ex     <- gene.region[[2]]
+
+    ## deseq analysis
+    gene.EL <- dif.deseq2(files.query.plus, files.query.minus, files.control.plus, files.control.minus, gene.bodies, out.file, ncores=ncores)
+    
+    gene.ex[,colnames(gene.EL)[-c(1:6)]]<-NA
+    gene.tab <-rbind.data.frame(gene.EL, gene.ex)
+
+    ## output
+    gene.deseq.bed <-tempfile(tmpdir=".", fileext=".bed")
+    on.exit(unlink(gene.deseq.bed))
+    write.table(gene.tab, file= gene.deseq.bed, col.name=F, row.name=F, sep="\t", quote=F)
+
+    gene.tab <- try( read.table(pipe(paste( "LC_COLLATE=C sort -k1,1 -k2,2n", gene.deseq.bed))), silent=TRUE)
+    if (class(gene.tab)=="try-error")
+       return(NULL)
+   
+    colnames(gene.tab) <- c("gene.chrom", "gene.chromStart", "gene.chromEnd",
+                            "transcript.id","gene.name","gene.strand",
+                            "gene.baseMean","gene.log2FoldChange", 
+                            "gene.lfcSE", "gene.stat", "gene.pvalue", "gene.padj"); 
+    ## save result
+    write.table(gene.tab, file=out.file,
+                          col.names=T,row.names=F,quote=F,sep="\t")   
+
+    gene.tab
+}
+
+diffTXN <- function( files.query.plus, files.query.minus, files.control.plus, files.control.minus, file.gene, file.tres, out.prefix=NULL, ncores=3){
+
+    ## output file 
+    if(is.null(out.prefix)) out.prefix <- Sys.Date( )
+    out.tres     <- paste(out.prefix, ".TRE.deseq.txt", sep="")
+    out.gene     <- paste(out.prefix, ".gene.deseq.txt", sep="")
+
+    ## deseq analysis
+    tab.dif.gene <- dif.deseq2.gene(  files.query.plus, files.query.minus, files.control.plus, files.control.minus, file.gene, file.tres, out.gene, ncores = ncores)
+    tab.dif.tres <- dif.deseq2.tres(  files.query.plus, files.query.minus, files.control.plus, files.control.minus, file.tres, out.tres, ncores = ncores)
+    
+    tftar.obj <- list(  tab.dif.tres        = tab.dif.tres,
+                        tab.dif.gene        = tab.dif.gene,
+                        files.query.plus    = files.query.plus, 
+                        files.query.minus   =files.query.minus, 
+                        files.control.plus  =files.control.plus, 
+                        files.control.minus =files.control.minus,
+                        TRE.file            = file.tres, 
+                        gene.file           = file.gene,               
+                        ncores= ncores)
+    
+    class(tftar.obj)<-"tfTarget"
+
+    tftar.obj
 }

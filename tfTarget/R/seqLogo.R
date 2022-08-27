@@ -199,9 +199,9 @@ seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yf
 #  if (class(pwm) == "pwm"){
 #    pwm <- pwm@pwm    
 #  }else 
-  if (class(pwm) == "data.frame"){
+  if (any( class(pwm) == "data.frame") ){
     pwm <- as.matrix(pwm)
-  }else if (class(pwm) != "matrix"){
+  }else if ( !any(class(pwm) == "matrix")){
     stop("pwm must be of class matrix or data.frame")
   }
 
@@ -277,7 +277,7 @@ pwm2ic<-function(pwm) {
 
 ## get consensus sequence from PWM
 pwm2cons<-function(pwm) {
-    if (class(pwm)!="matrix") {warning("pwm argument must be of class matrix")}
+    if (!any(class(pwm)=="matrix")) {warning("pwm argument must be of class matrix")}
     letters <- c("A", "C", "G", "T")
     paste(apply(pwm, 2, function(x){letters[rev(order(x))[1]]}), collapse="")
 }

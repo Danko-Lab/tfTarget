@@ -30,18 +30,18 @@ print.tfTarget<-function(tfTar){
     TRE.down.num <- nrow(tfTar$enh.down.bed)
     TRE.unc.num <- nrow(tfTar$enh.unc.bed)
 
-    cat("number of up-regulated TREs=", TRE.up.num,"\n")
-    cat("number of down-regulated TREs=", TRE.down.num,"\n")
-    cat("number of unc-regulated TREs=", TRE.unc.num,"\n")
+    message("number of up-regulated TREs=", TRE.up.num,"\n")
+    message("number of down-regulated TREs=", TRE.down.num,"\n")
+    message("number of unc-regulated TREs=", TRE.unc.num,"\n")
   }
   else
     if(!is.null( tfTar$df.motif.up.all ) & !is.null( tfTar$df.motif.down.all )){
       up.tf.num <- length( unique(tfTar$df.motif.up.all$motif.names) )
       down.tf.num <- length( unique(tfTar$df.motif.down.all$motif.names) )
 
-      cat( "number of TFs enriched in up-regulated TREs=", up.tf.num,"\n")
+      message( "number of TFs enriched in up-regulated TREs=", up.tf.num,"\n")
       print( as.character(unique(tfTar$df.motif.up.all$motif.names)))
-      cat( "number of TFs enriched in down-regulated TREs=", down.tf.num,"\n")
+      message( "number of TFs enriched in down-regulated TREs=", down.tf.num,"\n")
       print( as.character(unique(tfTar$df.motif.down.all$motif.names)))
   }
 

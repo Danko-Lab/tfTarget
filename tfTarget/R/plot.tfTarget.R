@@ -3,8 +3,8 @@
 read.seqfile.from.bed <- function(bed, twoBitPath, rm.dup = TRUE, tmpdir = getwd())
 {
   # create temporary filenames
-  tmp.seq = tempfile(tmpdir=tmpdir)
-  tmp.fa = tempfile(tmpdir=tmpdir)
+  tmp.seq = tempfile(tmpdir=".")
+  tmp.fa = tempfile(tmpdir=".")
 
   # write sequence list
   seqList = paste(bed[,1],":", as.integer(bed[,2]), "-", as.integer(bed[,3]), sep="")
@@ -27,13 +27,14 @@ read.seqfile.from.bed <- function(bed, twoBitPath, rm.dup = TRUE, tmpdir = getwd
 
   writeLines(seqList, tmp.seq);
 
+  on.exit(unlink(c(tmp.seq, tmp.fa)))
+
   # generate fasta file
   cmd = paste("twoBitToFa -seqList=", tmp.seq, " ", twoBitPath, " ", tmp.fa, sep="")
   err_code <- system(cmd, wait = TRUE);
   if( err_code != 0 )
   {
-    cat("Failed to call twoBitToFa to get the sequence data.\n");
-    unlink(c(tmp.seq, tmp.fa))
+    message("Warning: Failed to call twoBitToFa to get the sequence data.");
     return(NULL);
   }
   else
@@ -41,7 +42,6 @@ read.seqfile.from.bed <- function(bed, twoBitPath, rm.dup = TRUE, tmpdir = getwd
     # read data
     ms_data <- read.ms(tmp.fa)
     # clean up
-    unlink(c(tmp.seq, tmp.fa))
     return(ms_data)
   }
 }
@@ -104,10 +104,10 @@ locate.TF<-function(positive.bed, negative.bed, motif.id, half.size, mTH, ncores
     return(result.bed);
   }, mc.cores = ncores)
 
-  if(return.type=="list")
-  	return(r.comp)
+  if (return.type=="list")
+     return(r.comp)
   else
-    return(do.call(rbind.data.frame, r.comp))
+     return(do.call(rbind.data.frame, r.comp))
 
 }
 
@@ -115,14 +115,14 @@ locate.TF<-function(positive.bed, negative.bed, motif.id, half.size, mTH, ncores
 bedTools.merge<-function(bed)
 {
   #create temp files
-  a.file=tempfile()
+  a.file=tempfile(tmpdir=".", fileext=".bed")
   options(scipen =99) # not to use scientific notation when writing out
 
   #write bed formatted dataframes to tempfile
   write.table(bed,file=a.file,quote=F,sep="\t",col.names=F,row.names=F)
-
+  
   # create the command string and call the command using system()
-  command <- paste("LC_COLLATE=C sort -k1,1 -k2,2n",a.file,"| mergeBed -s -c 6 -o distinct -i stdin ",sep=" ")
+  command <- paste("LC_COLLATE=C sort -k1,1 -k2,2n",a.file,"| bedtools merge -s -c 6 -o distinct -i stdin ",sep=" ")
 
   res    <- read.table(pipe(command),header=F);
   res$V5 <- NA;
@@ -138,22 +138,26 @@ bedTools.merge<-function(bed)
 bedTools.2in<-function(bed1,bed2)
 {
   #create temp files
-  a.file=tempfile();
-  b.file=tempfile();
+  a.file=tempfile( tmpdir=".", fileext=".bed");
+  b.file=tempfile( tmpdir=".", fileext=".bed");
   options(scipen =99); # not to use scientific notation when writing out
 
   #write bed formatted dataframes to tempfile
   write.table(bed1,file=a.file,quote=F,sep="\t",col.names=F,row.names=F);
   write.table(bed2,file=b.file,quote=F,sep="\t",col.names=F,row.names=F);
+  
+  on.exit(unlink(c(a.file, b.file)))
 
   # create the command string and call the command using system()
   command <- paste("bedtools intersect -s -c -a",a.file,"-b",b.file,sep=" ");
 
-  #res=as.numeric(read.table(pipe(command),header=F)[,1])>0
-  res <- read.table(pipe(command),header=F)
-  unlink(a.file);
-  unlink(b.file);
-
+  res <- try( read.table(pipe(command),header=F), silent=FALSE)
+  if(class(res)=="try-error")
+  {   
+     message(paste("Warning: Failed to do bedtools intersect", command ))
+     return(NULL) 
+  }
+ 
   #return(as.numeric(res))
   return(as.numeric(res[,ncol(res)]>0))
 }
@@ -167,15 +171,18 @@ get.pos.mat<-function(TF.tab.list, ncores){
   TF.tab.df.merged.small <- TF.tab.df.merged[TF.tab.df.merged$V3-TF.tab.df.merged$V2<=30,];
 
   pos.mat <- do.call(cbind.data.frame,
-     mclapply(TF.tab.list,
+     lapply(TF.tab.list,
        FUN=function(x) {
-		 bedTools.2in(bed1 = TF.tab.df.merged.small, bed2 = x[,c("tf.chrom","tf.chromStart","tf.chromEnd","motif.name","motif.id","strand")])}
-	    ,mc.cores= ncores));
+           bedTools.2in(bed1 = TF.tab.df.merged.small, bed2 = x[,c("tf.chrom","tf.chromStart","tf.chromEnd","motif.name","motif.id","strand")])}
+	  ));
 
   return(pos.mat)
 }
 
 cluster.motif.pos<-function(motif.df, changed.bed, unchanged.bed, half.size, mTH, ncores, tfs, file.twoBit, pdf.name=NULL){
+
+  if( is.null(motif.df) || NROW(motif.df)<1)	
+    return(NULL)
 
   query.motifs <- motif.df[,1];
   if(length(query.motifs)<=1)
@@ -244,7 +251,8 @@ plot.tfTarget<-function( tfTar, out.prefix,  merge.motif=T){
                     "fdr", tfTar$fdr.cutoff,
                     "up",sep="_");
 
-  cluster.motif.pos(df.motif.up,
+  if ( !is.null(df.motif.up) && NROW(df.motif.up)>0)
+  	cluster.motif.pos(df.motif.up,
                     tfTar$enh.up.bed,
                     tfTar$enh.unc.bed,
                     tfTar$half.size,
@@ -252,7 +260,9 @@ plot.tfTarget<-function( tfTar, out.prefix,  merge.motif=T){
                     tfTar$ncores,
                     tfTar$tfs,
                     tfTar$file.twoBit,
-                    pdf.name);
+                    pdf.name)
+  else
+      message(paste("Warning: No PDFs are generated.(", pdf.name, "*.pdf)"))
 
   pdf.name <- paste( out.prefix,
                     "pval.upBd", tfTar$pval.cutoff.up,
@@ -262,7 +272,8 @@ plot.tfTarget<-function( tfTar, out.prefix,  merge.motif=T){
                     "fdr", tfTar$fdr.cutoff,
                     "down",sep="_");
 
-  cluster.motif.pos( df.motif.down,
+  if( !is.null(df.motif.down) && NROW(df.motif.down)>0 ) 
+  	cluster.motif.pos( df.motif.down,
                      tfTar$enh.down.bed,
                      tfTar$enh.unc.bed,
                      tfTar$half.size,
@@ -270,7 +281,9 @@ plot.tfTarget<-function( tfTar, out.prefix,  merge.motif=T){
                      tfTar$ncores,
                      tfTar$tfs,
                      tfTar$file.twoBit,
-                     pdf.name);
+                     pdf.name)
+  else
+      message(paste("Warning: No PDFs are generated.(", pdf.name, "*.pdf)"))
 
   invisible()
 

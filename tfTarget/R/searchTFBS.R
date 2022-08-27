@@ -7,10 +7,10 @@ background.check<-function( gc.pos, gc.neg, gc.correction, file.pdf.vioplot=NA, 
   # We use the customizable pvalue in this function.
   if( verbose)
   {
-    cat("! Difference between GC content in negative and positive TREs (use 'gc.correction.pdf' to see pdf figure):\n");
-    cat("  p-value (Wilcoxon-Mann-Whitney test) =", gc.test$p.value, "\n");
-    cat("  median/sample size of GC positive =", median(gc.pos), "/", length(gc.pos), "\n");
-    cat("  median/sample size of GC negative =", median(gc.neg), "/", length(gc.neg), "\n");
+    cat(" ![TF] Difference between GC content in negative and positive TREs (use 'gc.correction.pdf' to see pdf figure):\n");
+    cat("  [TF] p-value (Wilcoxon-Mann-Whitney test) =", gc.test$p.value, "\n");
+    cat("  [TF] median/sample size of GC positive =", median(gc.pos), "/", length(gc.pos), "\n");
+    cat("  [TF] median/sample size of GC negative =", median(gc.neg), "/", length(gc.neg), "\n");
 
     if( !is.null(file.pdf.vioplot) && !is.na( file.pdf.vioplot)  )
     {
@@ -32,14 +32,14 @@ background.check<-function( gc.pos, gc.neg, gc.correction, file.pdf.vioplot=NA, 
     if( pdf.output )
     {
       dev.off();
-      cat("* Please check the vioplot figure to make sure, the vioplot figure: ", file.pdf.vioplot, "\n" );
+      cat(" *[TF] Please check the vioplot figure to make sure, the vioplot figure: ", file.pdf.vioplot, "\n" );
     }
     return(NULL);
   }
 
   if( length(gc.neg)< 5000 )
   {
-    if(verbose) cat("! Failed to make GC correction due to small bed data(size<5000).\n");
+    if(verbose) cat(" ![TF] Failed to make GC correction due to small bed data(size<5000).\n");
     return(NULL);
   }
 
@@ -79,9 +79,9 @@ background.check<-function( gc.pos, gc.neg, gc.correction, file.pdf.vioplot=NA, 
 
   if(verbose)
   {
-    cat("* After the resampling from negative TREs:\n");
-    cat("  p-value (Wilcoxon-Mann-Whitney test) =", gc.test2$p.value, "\n");
-    cat("  median/sample size of GC negative =", median(gc.neg[indx.bgnew]), "/", length(indx.bgnew), "\n");
+    cat(" *[TF] After the resampling from negative TREs:\n");
+    cat("  [TF] p-value (Wilcoxon-Mann-Whitney test) =", gc.test2$p.value, "\n");
+    cat("  [TF] median/sample size of GC negative =", median(gc.neg[indx.bgnew]), "/", length(indx.bgnew), "\n");
   }
 
   if( pdf.output )
@@ -89,7 +89,7 @@ background.check<-function( gc.pos, gc.neg, gc.correction, file.pdf.vioplot=NA, 
     vioplot(gc.pos, gc.neg, gc.neg[indx.bgnew], names=c("Positive", "Negative", "Negative.resample"));
     abline(h=median(gc.pos), lty="dotted")
     dev.off();
-    cat("* Please check the vioplot figure to make sure, the vioplot figure: ", file.pdf.vioplot, "\n" );
+    cat(" *[TF] Please check the vioplot figure to make sure, the vioplot figure: ", file.pdf.vioplot, "\n" );
   }
 
   ## return sampling background.
@@ -115,6 +115,8 @@ tfbs_enrichmentTest<-function( tfbs, file.genome,
           pv.adj = p.adjust.methods)
 {
   stopifnot(class(tfbs) == "tfbs")
+  
+  message("  [TF] tfbs_enrichmentTest\n");
 
   if( !check_bed( positive.bed ) )
     stop("Wrong format in the parameter of 'positive.bed', at least three columns including chromosome, strat, stop.");
@@ -170,7 +172,7 @@ tfbs_enrichmentTest<-function( tfbs, file.genome,
   if( missing(negative.bed) )
   {
     negative.bed <- background.generate( positive.bed );
-    cat("*", NROW(negative.bed),  "GC negative loci are randomly generated.\n");
+    message(" *[TF]", NROW(negative.bed),  "GC negative loci are randomly generated.\n");
   }
 
   # read sequences
@@ -207,7 +209,7 @@ tfbs_enrichmentTest<-function( tfbs, file.genome,
 
     for(i in 2:gc.robust.rep)
     {
-      cat("* GC robust replication for background resampling, loop=", i, "\n");
+      message(" *[TF] GC robust replication for background resampling, loop=", i, "\n");
       r.comp <- comparative_scanDb_rtfbs( tfbs,
                 file.twoBit,
                 positive.bed,
@@ -359,7 +361,7 @@ searchTFBS <- function(tfTar, file.tfs, file.twoBit, pval.cutoff.up=0.01, pval.c
      stop("The 2bit file is not found!");
 
   deseq.table.TRE <-tfTar$tab.dif.tres
-  #ncores <- tfTar$ncores;
+  ncores <- tfTar$ncores;
   
   deseq.table.sig <- center.bed(deseq.table.TRE[!is.na(deseq.table.TRE$padj) & deseq.table.TRE$padj <pval.cutoff.up,], half.size, half.size)
   enh.unc.bed     <- center.bed(deseq.table.TRE[!is.na(deseq.table.TRE$padj) & deseq.table.TRE$padj> pval.cutoff.down,], half.size, half.size)

@@ -2,6 +2,6 @@
 
 .onAttach<- function(libname, pkgName)
 {
-	assignInNamespace("background.check", background.check,ns="rtfbsdb")
-	assignInNamespace("tfbs_enrichmentTest", tfbs_enrichmentTest,ns="rtfbsdb")
+    assignInNamespace("background.check", background.check,ns="rtfbsdb")
+    assignInNamespace("tfbs_enrichmentTest", tfbs_enrichmentTest,ns="rtfbsdb")  
 }
